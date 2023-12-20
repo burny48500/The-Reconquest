@@ -38,15 +38,33 @@ public class MenuScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("Welcome to The Reconquest", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
+        TextButton goToGameButton = new TextButton("Play", game.getSkin());
+        TextButton selectMapButton = new TextButton("Select Map", game.getSkin());
+        TextButton exitGameButton = new TextButton("Exit Game", game.getSkin());
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToGame(); // Change to the game screen when button is pressed
+            }
+        });
+        // Show Select Map Button
+        table.add(selectMapButton).width(300).row();
+        selectMapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Implement file selection logic here to select the map file
+            }
+        });
+        // Show Exit button
+        table.add(exitGameButton).width(300).row();
+        exitGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
             }
         });
     }
