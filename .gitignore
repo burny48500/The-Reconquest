@@ -2,6 +2,7 @@
 **/build/
 !src/**/build/
 target/
+.idea/
 
 # Taken from https://github.com/github/gitignore
 
