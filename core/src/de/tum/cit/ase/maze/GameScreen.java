@@ -16,8 +16,10 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     private final BitmapFont font;
-
     private float sinusInput = 0f;
+    private float characterX = 0;
+    private float characterY = 0;
+    private float speed = 100;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -45,33 +47,41 @@ public class GameScreen implements Screen {
             game.goToMenu();
         }
 
-        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
+        // Handle input for character movement
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            characterY += speed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            characterY -= speed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            characterX -= speed * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            characterX += speed * delta;
+        }
 
-        camera.update(); // Update the camera
+        // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1);
 
-        // Move text in a circular path to have an example of a moving object
-        sinusInput += delta;
-        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
-        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
-
-        // Set up and begin drawing with the sprite batch
+        // Update the camera
+        camera.update();
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
 
-        game.getSpriteBatch().begin(); // Important to call this before drawing anything
+        // Begin SpriteBatch
+        game.getSpriteBatch().begin();
 
-        // Render the text
-        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
-
-        // Draw the character next to the text :) / We can reuse sinusInput here
+        // Draw the character at the new position based on WASD key input
         game.getSpriteBatch().draw(
                 game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
-                textX - 96,
-                textY - 64,
-                64,
-                128
+                characterX,
+                characterY,
+                64, // Width of the character
+                128 // Height of the character
         );
 
-        game.getSpriteBatch().end(); // Important to call this after drawing everything
+        // End SpriteBatch
+        game.getSpriteBatch().end();
     }
 
     @Override
