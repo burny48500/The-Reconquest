@@ -1,8 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Game" type="Application" factoryName="Application">
     <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.tum.cit.ase.maze.DesktopLauncher" />
-    <module name="fophn2324infun2324projectworkx-g22.desktop.main" />
+    <module name="fophn2324infun2324projectworkx-g22_bueno.desktop.main" />
     <option name="VM_PARAMETERS" value="-XstartOnFirstThread" />
     <extension name="coverage">
       <pattern>
