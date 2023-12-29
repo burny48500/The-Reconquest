@@ -171,8 +171,9 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
+    }
 
-    }private void readFile(String filePath) {
+    private void readFile(String filePath) {
         try {
             File file = new File(filePath);
             Scanner scanner = new Scanner(file);
