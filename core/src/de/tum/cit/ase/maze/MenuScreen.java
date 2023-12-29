@@ -2,16 +2,31 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.RemoveActorAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.io.File;
+import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -47,8 +62,8 @@ public class MenuScreen implements Screen {
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame(); // Change to the game screen when button is pressed
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.goToGame();
             }
         });
         // Show Select Map Button
@@ -56,9 +71,16 @@ public class MenuScreen implements Screen {
         selectMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // Implement file selection logic here to select the map file
+                selectFile(null, selectedFile -> {
+                    if (selectedFile != null) {
+                        System.out.println("Selected File: " + selectedFile.getAbsolutePath());
+                        // Perform actions with the selected file here
+                    }
+                });
             }
         });
+
+
         // Show Exit button
         table.add(exitGameButton).width(300).row();
         exitGameButton.addListener(new ChangeListener() {
@@ -68,7 +90,22 @@ public class MenuScreen implements Screen {
             }
         });
     }
+    public static void selectFile(Component parent, Consumer<File> fileConsumer) {
+        new Thread(() -> {
+            SwingUtilities.invokeLater(() -> {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int result = fileChooser.showOpenDialog(parent);
 
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    Gdx.app.postRunnable(() -> fileConsumer.accept(selectedFile));
+                } else {
+                    Gdx.app.postRunnable(() -> fileConsumer.accept(null));
+                }
+            });
+        }).start();
+    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
