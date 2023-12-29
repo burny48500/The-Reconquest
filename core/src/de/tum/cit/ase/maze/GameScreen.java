@@ -44,7 +44,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         stateTime += Gdx.graphics.getDeltaTime();
-        //estaba private, ver si se puede optimizar
         game.loadCharacterAnimation();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             pause();

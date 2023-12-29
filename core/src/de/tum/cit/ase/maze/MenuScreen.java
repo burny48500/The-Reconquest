@@ -24,9 +24,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
-import java.util.function.Consumer;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -68,17 +70,49 @@ public class MenuScreen implements Screen {
         });
         // Show Select Map Button
         table.add(selectMapButton).width(300).row();
+        // Show Select Map Button
         selectMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectFile(null, selectedFile -> {
-                    if (selectedFile != null) {
-                        System.out.println("Selected File: " + selectedFile.getAbsolutePath());
-                        // Perform actions with the selected file here
+                String selectedFilePath = "";
+                File selectedFile = null;
+                String osName = System.getProperty("os.name").toLowerCase();
+
+                try {
+                    if (osName.contains("mac")) {
+                        // macOS-specific logic to choose a file
+                        String script = "set selectedFile to choose file " +
+                                "with prompt \"Please select a .properties file\" " +
+                                "default location (path to home folder) " +
+                                "without invisibles\n" +
+                                "return POSIX path of selectedFile";
+
+                        Process process = Runtime.getRuntime().exec(new String[]{"/usr/bin/osascript", "-e", script});
+                        int result = process.waitFor();
+                        if (result == 0) {
+                            selectedFilePath = new BufferedReader(new InputStreamReader(process.getInputStream())).readLine();
+                        }
+                    } else {
+                        // Windows (and other OS) specific logic to choose a file
+                        selectedFile = selectFile(null);
+                        if (selectedFile != null) {
+                            selectedFilePath = selectedFile.getAbsolutePath();
+                        }
                     }
-                });
+
+                    // Common file reading logic
+                    if (selectedFilePath != null && !selectedFilePath.isEmpty()) {
+                        System.out.println("Selected File: " + selectedFilePath);
+                        readFile(selectedFilePath);
+                    } else {
+                        System.out.println("No file selected or invalid file type.");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
+
 
 
         // Show Exit button
@@ -90,21 +124,17 @@ public class MenuScreen implements Screen {
             }
         });
     }
-    public static void selectFile(Component parent, Consumer<File> fileConsumer) {
-        new Thread(() -> {
-            SwingUtilities.invokeLater(() -> {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int result = fileChooser.showOpenDialog(parent);
-
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    Gdx.app.postRunnable(() -> fileConsumer.accept(selectedFile));
-                } else {
-                    Gdx.app.postRunnable(() -> fileConsumer.accept(null));
-                }
-            });
-        }).start();
+    public static File selectFile(Component parent) {
+        // macOS-specific file dialog
+        FileDialog fileDialog = new FileDialog((Frame) null);
+        fileDialog.setMode(FileDialog.LOAD);
+        fileDialog.setVisible(true);
+        String file = fileDialog.getFile();
+        String dir = fileDialog.getDirectory();
+        if (file != null && dir != null) {
+            return new File(dir, file);
+        }
+        return null;
     }
     @Override
     public void render(float delta) {
@@ -141,5 +171,23 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
+
+    }private void readFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                // Process the line
+                System.out.println(line); // or handle the line as needed
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePath);
+            e.printStackTrace();
+        }
     }
+
+
+
 }
