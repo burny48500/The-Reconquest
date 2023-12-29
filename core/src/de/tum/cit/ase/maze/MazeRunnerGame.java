@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -19,6 +20,8 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private int selectedCharacterColumn = 0; // Column index of the third character (0-based index)
+    private int selectedCharacterRow = 0;    // Row index of the selected character (0-based index)
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -45,7 +48,7 @@ public class MazeRunnerGame extends Game {
     public void create() {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
-        this.loadCharacterAnimation(); // Load character animation
+        //this.loadCharacterAnimation(); // Load character animation
 
         // Play some background music
         // Background sound
@@ -81,7 +84,7 @@ public class MazeRunnerGame extends Game {
     /**
      * Loads the character animation from the character.png file.
      */
-    private void loadCharacterAnimation() {
+    void loadCharacterAnimation() {
         Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
 
         int frameWidth = 16;
@@ -91,12 +94,32 @@ public class MazeRunnerGame extends Game {
         // libGDX internal Array instead of ArrayList because of performance
         Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
 
-        // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++) {
-            walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+        // Assuming characters are arranged in a grid in the sprite sheet
+        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            selectedCharacterColumn = 0;
+            selectedCharacterRow = 3;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            selectedCharacterColumn = 0;
+            selectedCharacterRow = 1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+            selectedCharacterColumn = 0;
+            selectedCharacterRow = 0;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.W)){
+            selectedCharacterColumn = 0;
+            selectedCharacterRow = 2;
+        }
+        // Add frames for the selected character to the animation
+        for (int i=0;i<animationFrames;i++){
+            int startX = selectedCharacterColumn * frameWidth + i * frameWidth;
+            int startY = selectedCharacterRow * frameHeight;
+            walkFrames.add(new TextureRegion(walkSheet, startX, startY, frameWidth, frameHeight));
         }
 
         characterDownAnimation = new Animation<>(0.1f, walkFrames);
+
     }
 
     /**

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -16,10 +17,12 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     private final BitmapFont font;
-    private float sinusInput = 0f;
+    private float stateTime = 0f;
     private float characterX = 0;
     private float characterY = 0;
     private float speed = 100;
+    private boolean isMoving;
+    private boolean isPaused = false;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -38,42 +41,44 @@ public class GameScreen implements Screen {
         font = game.getSkin().getFont("font");
     }
 
-
-    // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-        // Check for escape key press to go back to the menu
+        stateTime += Gdx.graphics.getDeltaTime();
+        game.loadCharacterAnimation();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
+            pause();
         }
-
-        // Handle input for character movement
+        isMoving = false;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             characterY += speed * delta;
+            isMoving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             characterY -= speed * delta;
+            isMoving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             characterX -= speed * delta;
+            isMoving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             characterX += speed * delta;
+            isMoving = true;
         }
 
-        // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Update the camera
         camera.update();
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
 
-        // Begin SpriteBatch
         game.getSpriteBatch().begin();
+        if (!isMoving){
+            stateTime=0f;
+        }
 
         // Draw the character at the new position based on WASD key input
         game.getSpriteBatch().draw(
-                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
+                game.getCharacterDownAnimation().getKeyFrame(stateTime, isMoving),
                 characterX,
                 characterY,
                 64, // Width of the character
@@ -83,7 +88,24 @@ public class GameScreen implements Screen {
         // End SpriteBatch
         game.getSpriteBatch().end();
     }
+    private void togglePause() {
+        isPaused = !isPaused;
 
+        if (isPaused) {
+            // Pause logic (e.g., stop animations, pause timers)
+            game.getCharacterDownAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
+
+            // Pause timers or other game logic
+            // Example: timer.pause();
+
+        } else {
+            // Resume logic (e.g., resume animations, resume timers)
+            game.getCharacterDownAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
+
+            // Resume timers or other game logic
+            // Example: timer.resume();
+        }
+    }
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false);
@@ -91,10 +113,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+        togglePause();
     }
 
     @Override
     public void resume() {
+        togglePause();
     }
 
     @Override
