@@ -32,6 +32,16 @@ public class MazeRunnerGame extends Game {
     // Character animation downwards
     private Animation<TextureRegion> characterDownAnimation;
 
+    public void setFileGame(String fileGame) {
+        this.fileGame = fileGame;
+    }
+
+    public String getFileGame() {
+        return fileGame;
+    }
+
+    private String fileGame;
+
     /**
      * Constructor for MazeRunnerGame.
      *
@@ -67,6 +77,38 @@ public class MazeRunnerGame extends Game {
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
+        }
+    }
+    public void drawFiguras() {
+        String archivo = fileGame;
+        String[] lineas = archivo.split("\n");
+
+        for (String linea : lineas) {
+            if (linea.contains(",")){
+                String[] partes = linea.split("=");
+                String[] coordenadas = partes[0].split(",");
+                int x = Integer.parseInt(coordenadas[0].trim())*100;
+                int y = Integer.parseInt(coordenadas[1].trim())*100;
+                int tipoImagen = Integer.parseInt(partes[1].trim());
+                drawImagen(x, y, tipoImagen);
+            }
+        }
+    }
+    private void drawImagen(int x, int y, int tipoImagen) {
+        Texture things = new Texture(Gdx.files.internal("things.png"));
+        switch (tipoImagen) {
+            case 0:
+                Animation<TextureRegion> walls = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 32));
+                spriteBatch.draw(walls.getKeyFrame(0), x, y, 64, 128);
+                break;
+            case 1:
+                Animation<TextureRegion> die = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 32));
+                spriteBatch.draw(die.getKeyFrame(0), x, y, 64, 128);
+                break;
+            // Agrega más casos según sea necesario para tus tipos de imágenes
+            default:
+                // Manejo para otros tipos de imágenes si es necesario
+                break;
         }
     }
 

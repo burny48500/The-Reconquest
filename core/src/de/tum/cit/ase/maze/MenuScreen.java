@@ -37,6 +37,7 @@ import java.util.Scanner;
 public class MenuScreen implements Screen {
 
     private final Stage stage;
+    private String fileContent = ""; // String to store the content of the file
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -104,6 +105,9 @@ public class MenuScreen implements Screen {
                     if (selectedFilePath != null && !selectedFilePath.isEmpty()) {
                         System.out.println("Selected File: " + selectedFilePath);
                         readFile(selectedFilePath);
+                        System.out.println(getFileContent());
+                        game.goToGame();
+                        game.setFileGame(getFileContent());
                     } else {
                         System.out.println("No file selected or invalid file type.");
                     }
@@ -177,11 +181,16 @@ public class MenuScreen implements Screen {
         try {
             File file = new File(filePath);
             Scanner scanner = new Scanner(file);
+            StringBuilder stringBuilder = new StringBuilder();
+
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                // Process the line
-                System.out.println(line); // or handle the line as needed
+                stringBuilder.append(line).append("\n"); // Append each line to the StringBuilder
             }
+
+            fileContent = stringBuilder.toString(); // Store the content in the member variable
+            System.out.println(fileContent); // or handle the content as needed
+
             scanner.close();
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + filePath);
@@ -189,6 +198,8 @@ public class MenuScreen implements Screen {
         }
     }
 
-
+    public String getFileContent() {
+        return fileContent;
+    }
 
 }
