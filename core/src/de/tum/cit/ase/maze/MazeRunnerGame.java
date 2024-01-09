@@ -22,6 +22,7 @@ public class MazeRunnerGame extends Game {
     private GameScreen gameScreen;
     private int selectedCharacterColumn = 0; // Column index of the third character (0-based index)
     private int selectedCharacterRow = 0;    // Row index of the selected character (0-based index)
+    private float frameDurationCharacter = 0.1f;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -160,7 +161,7 @@ public class MazeRunnerGame extends Game {
             walkFrames.add(new TextureRegion(walkSheet, startX, startY, frameWidth, frameHeight));
         }
 
-        characterDownAnimation = new Animation<>(0.1f, walkFrames);
+        characterDownAnimation = new Animation<>(frameDurationCharacter, walkFrames);
 
     }
 
@@ -186,5 +187,9 @@ public class MazeRunnerGame extends Game {
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
+    }
+
+    public void setFrameDurationCharacter(float frameDurationCharacter) {
+        this.frameDurationCharacter = frameDurationCharacter;
     }
 }

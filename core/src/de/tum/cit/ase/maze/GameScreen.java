@@ -42,12 +42,12 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = 2.75f;
+        camera.zoom = 1f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
         pauseFont = game.getSkin().getFont("font");
-        pauseFont.getData().setScale(2.5f);
+        //pauseFont.getData().setScale(2.5f);
     }
 
 
@@ -95,21 +95,54 @@ public class GameScreen implements Screen {
 
         if (!isPaused) {
             isMoving = false;
+            //Normal
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 characterY += speed * delta;
                 isMoving = true;
+                game.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 characterY -= speed * delta;
                 isMoving = true;
+                game.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 characterX -= speed * delta;
                 isMoving = true;
+                game.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 characterX += speed * delta;
                 isMoving = true;
+                game.setFrameDurationCharacter(0.1f);
+            }
+            //Running
+            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.W)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.UP))) {
+                characterY += speed * 2 * delta;
+                isMoving = true;
+                game.setFrameDurationCharacter(0.05f);
+            }
+            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.S)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
+                characterY -= speed * 2 * delta;
+                isMoving = true;
+                game.setFrameDurationCharacter(0.05f);
+
+            }
+            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.A)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
+                characterX -= speed * 2 * delta;
+                isMoving = true;
+                game.setFrameDurationCharacter(0.05f);
+
+            }
+            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.D)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))) {
+                characterX += speed * 2 * delta;
+                isMoving = true;
+                game.setFrameDurationCharacter(0.05f);
+
             }
         }
     }
@@ -120,10 +153,15 @@ public class GameScreen implements Screen {
         // You can use pauseFont to render text, buttons, etc.
 
         game.getSpriteBatch().begin();
-        pauseFont.draw(game.getSpriteBatch(), "Game Paused", Gdx.graphics.getWidth() / 2f + 1000, Gdx.graphics.getHeight() / 2f + 1300);
-        pauseFont.draw(game.getSpriteBatch(), "Press Space to resume", Gdx.graphics.getWidth() / 2f + 800, Gdx.graphics.getHeight() / 2f+1100);
-        pauseFont.draw(game.getSpriteBatch(), "Press S to select another map", Gdx.graphics.getWidth() / 2f +800, Gdx.graphics.getHeight() / 2f +1010);
-        pauseFont.draw(game.getSpriteBatch(), "Press X to exit", Gdx.graphics.getWidth() / 2f +800, Gdx.graphics.getHeight() / 2f + 920);
+
+        float centerX = Gdx.graphics.getWidth() / 2f;
+        float centerY = Gdx.graphics.getHeight() / 2f;
+
+        // Adjust the text position so it's centered
+        pauseFont.draw(game.getSpriteBatch(), "Game Paused", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 20, centerY + 100);
+        pauseFont.draw(game.getSpriteBatch(), "Press Space to resume", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY + 20);
+        pauseFont.draw(game.getSpriteBatch(), "Press M for Menu Screen", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY - 30);
+        pauseFont.draw(game.getSpriteBatch(), "Press X to quit", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY - 80);
         game.getSpriteBatch().end();
 
         // Handle input for the pause menu
@@ -131,27 +169,9 @@ public class GameScreen implements Screen {
             togglePause();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             Gdx.app.exit();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-
-                // Specify the allowed file extension(s)
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("Properties Files", "properties");
-                fileChooser.setFileFilter(filter);
-
-                int result = fileChooser.showOpenDialog(null);
-                System.out.println("Result: " + result);
-
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    System.out.println("Selected File: " + selectedFile.getAbsolutePath());
-                    game.drawFiguras();
-
-                    // Perform actions with the selected file here
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            pauseFont.getData().setScale(1f);
+            game.goToMenu();
         }
     }
 
