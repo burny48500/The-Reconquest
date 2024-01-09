@@ -117,8 +117,6 @@ public class MenuScreen implements Screen {
             }
         });
 
-
-
         // Show Exit button
         table.add(exitGameButton).width(300).row();
         exitGameButton.addListener(new ChangeListener() {
@@ -139,6 +137,26 @@ public class MenuScreen implements Screen {
             return new File(dir, file);
         }
         return null;
+    }
+    private void readFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            Scanner scanner = new Scanner(file);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                stringBuilder.append(line).append("\n"); // Append each line to the StringBuilder
+            }
+
+            fileContent = stringBuilder.toString(); // Store the content in the member variable
+            System.out.println(fileContent); // or handle the content as needed
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePath);
+            e.printStackTrace();
+        }
     }
     @Override
     public void render(float delta) {
@@ -175,27 +193,6 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
-    }
-
-    private void readFile(String filePath) {
-        try {
-            File file = new File(filePath);
-            Scanner scanner = new Scanner(file);
-            StringBuilder stringBuilder = new StringBuilder();
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                stringBuilder.append(line).append("\n"); // Append each line to the StringBuilder
-            }
-
-            fileContent = stringBuilder.toString(); // Store the content in the member variable
-            System.out.println(fileContent); // or handle the content as needed
-
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + filePath);
-            e.printStackTrace();
-        }
     }
 
     public String getFileContent() {
