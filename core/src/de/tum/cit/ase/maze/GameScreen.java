@@ -24,9 +24,9 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final BitmapFont font;
     private float stateTime = 0f;
-    private float characterX = 0;
-    private float characterY = 0;
-    private float speed = 100;
+    private static float characterX = 0;
+    private static float characterY = 0;
+    private float speed = 40;
     private boolean isMoving;
     private boolean isPaused = false;
     private BitmapFont pauseFont;
@@ -42,12 +42,12 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
-//        camera.zoom = 0.3f;
+        camera.zoom = 0.15f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
         pauseFont = game.getSkin().getFont("font");
-        //pauseFont.getData().setScale(2.5f);
+        pauseFont.getData().setScale(0.2f);
     }
 
 
@@ -70,11 +70,11 @@ public class GameScreen implements Screen {
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
             // Draw the character at the new position based on WASD key input
             game.getSpriteBatch().draw(
-                    game.getCharacterDownAnimation().getKeyFrame(stateTime, isMoving),
+                    game.getCharacterAnimation().getKeyFrame(stateTime, isMoving),
                     characterX,
                     characterY,
-                    16, // Width of the character
-                    32 // Height of the character
+                    10, // Width of the character
+                    20 // Height of the character
             );
             game.drawImagen();
             // End SpriteBatch
@@ -115,29 +115,29 @@ public class GameScreen implements Screen {
                 game.setFrameDurationCharacter(0.1f);
             }
             //Running
-            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.W)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.UP))) {
-                characterY += speed * 2 * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.W)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.UP))) {
+                characterY += speed * 1.5 * delta;
                 isMoving = true;
                 game.setFrameDurationCharacter(0.05f);
             }
-            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.S)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
-                characterY -= speed * 2 * delta;
-                isMoving = true;
-                game.setFrameDurationCharacter(0.05f);
-
-            }
-            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.A)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
-                characterX -= speed * 2 * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.S)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
+                characterY -= speed * 1.5 * delta;
                 isMoving = true;
                 game.setFrameDurationCharacter(0.05f);
 
             }
-            if ((Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.D)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))) {
-                characterX += speed * 2 * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.A)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
+                characterX -= speed * 1.5 * delta;
+                isMoving = true;
+                game.setFrameDurationCharacter(0.05f);
+
+            }
+            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.D)) ||
+                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))) {
+                characterX += speed * 1.5 * delta;
                 isMoving = true;
                 game.setFrameDurationCharacter(0.05f);
 
@@ -152,14 +152,11 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
-        float centerX = Gdx.graphics.getWidth() / 2f;
-        float centerY = Gdx.graphics.getHeight() / 2f;
-
         // Adjust the text position so it's centered
-        pauseFont.draw(game.getSpriteBatch(), "Game Paused", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 20, centerY + 100);
-        pauseFont.draw(game.getSpriteBatch(), "Press Space to resume", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY + 20);
-        pauseFont.draw(game.getSpriteBatch(), "Press M for Menu Screen", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY - 30);
-        pauseFont.draw(game.getSpriteBatch(), "Press X to quit", centerX - pauseFont.getRegion().getRegionWidth() / 2 - 100, centerY - 80);
+        pauseFont.draw(game.getSpriteBatch(), "Game Paused", characterX/ 2f, characterY/ 2f +100);
+        pauseFont.draw(game.getSpriteBatch(), "Press Space to resume", characterX/ 2f, characterY/ 2f +80);
+        pauseFont.draw(game.getSpriteBatch(), "Press M for Menu Screen", characterX/ 2f, characterY/ 2f +70);
+        pauseFont.draw(game.getSpriteBatch(), "Press X to quit", characterX/ 2f, characterY/ 2f +60);
         game.getSpriteBatch().end();
 
         // Handle input for the pause menu
@@ -178,14 +175,14 @@ public class GameScreen implements Screen {
 
         if (isPaused) {
             // Pause logic (e.g., stop animations, pause timers)
-            game.getCharacterDownAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
+            game.getCharacterAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
 
             // Pause timers or other game logic
             // Example: timer.pause();
 
         } else {
             // Resume logic (e.g., resume animations, resume timers)
-            game.getCharacterDownAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
+            game.getCharacterAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
 
             // Resume timers or other game logic
             // Example: timer.resume();
@@ -219,5 +216,12 @@ public class GameScreen implements Screen {
     public void dispose() {
     }
 
+    public static void setCharacterX(float characterX) {
+        GameScreen.characterX = characterX;
+    }
+
+    public static void setCharacterY(float characterY) {
+        GameScreen.characterY = characterY;
+    }
     // Additional methods and logic can be added as needed for the game screen
 }
