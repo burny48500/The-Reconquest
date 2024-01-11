@@ -68,7 +68,6 @@ public class GameScreen implements Screen {
                 stateTime = 0f;
             }
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
-
             // Draw the character at the new position based on WASD key input
             game.getSpriteBatch().draw(
                     game.getCharacterDownAnimation().getKeyFrame(stateTime, isMoving),
