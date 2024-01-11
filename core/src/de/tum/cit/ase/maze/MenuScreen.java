@@ -106,8 +106,10 @@ public class MenuScreen implements Screen {
                         System.out.println("Selected File: " + selectedFilePath);
                         readFile(selectedFilePath);
                         System.out.println(getFileContent());
-                        game.goToGame();
                         game.setFileGame(getFileContent());
+                        game.readMap();
+                        game.goToGame();
+
                     } else {
                         System.out.println("No file selected or invalid file type.");
                     }

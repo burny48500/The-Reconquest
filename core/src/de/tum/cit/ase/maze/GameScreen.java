@@ -41,8 +41,8 @@ public class GameScreen implements Screen {
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
-        camera.setToOrtho(false);
-        camera.zoom = 1f;
+        camera.setToOrtho(true);
+//        camera.zoom = 0.3f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -60,6 +60,7 @@ public class GameScreen implements Screen {
 
             ScreenUtils.clear(0, 0, 0, 1);
 
+            camera.position.set(characterX, characterY, 0);
             camera.update();
 
             game.getSpriteBatch().begin();
@@ -73,12 +74,10 @@ public class GameScreen implements Screen {
                     game.getCharacterDownAnimation().getKeyFrame(stateTime, isMoving),
                     characterX,
                     characterY,
-                    64, // Width of the character
-                    128 // Height of the character
+                    16, // Width of the character
+                    32 // Height of the character
             );
-            if (game.getFileGame() != null){
-                game.drawFiguras();
-            }
+            game.drawImagen();
             // End SpriteBatch
             game.getSpriteBatch().end();
 

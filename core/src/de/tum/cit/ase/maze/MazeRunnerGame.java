@@ -12,6 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The MazeRunnerGame class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
@@ -32,6 +36,8 @@ public class MazeRunnerGame extends Game {
 
     // Character animation downwards
     private Animation<TextureRegion> characterDownAnimation;
+    int[][] coordinateArray;
+
 
     public void setFileGame(String fileGame) {
         this.fileGame = fileGame;
@@ -80,36 +86,45 @@ public class MazeRunnerGame extends Game {
             gameScreen = null;
         }
     }
-    public void drawFiguras() {
+    public void readMap() {
         String archivo = fileGame;
         String[] lineas = archivo.split("\n");
-
+        System.out.println(archivo);
+        int index = 0;
+        coordinateArray = new int[lineas.length][3];
         for (String linea : lineas) {
-            if (linea.contains(",")){
+            if (linea.contains(",")) {
                 String[] partes = linea.split("=");
                 String[] coordenadas = partes[0].split(",");
-                int x = Integer.parseInt(coordenadas[0].trim())*100;
-                int y = Integer.parseInt(coordenadas[1].trim())*100;
+                int x = Integer.parseInt(coordenadas[0].trim())*10;
+                int y = Integer.parseInt(coordenadas[1].trim())*10;
                 int tipoImagen = Integer.parseInt(partes[1].trim());
-                drawImagen(x, y, tipoImagen);
+
+                coordinateArray[index][0] = x;
+                coordinateArray[index][1] = y;
+                coordinateArray[index][2] = tipoImagen;
+
+                index++;
             }
         }
     }
-    private void drawImagen(int x, int y, int tipoImagen) {
-        Texture things = new Texture(Gdx.files.internal("things.png"));
-        switch (tipoImagen) {
-            case 0:
-                Animation<TextureRegion> walls = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 32));
-                spriteBatch.draw(walls.getKeyFrame(0), x, y, 64, 128);
-                break;
-            case 1:
-                Animation<TextureRegion> die = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 32));
-                spriteBatch.draw(die.getKeyFrame(0), x, y, 64, 128);
-                break;
-            // Agrega más casos según sea necesario para tus tipos de imágenes
-            default:
-                // Manejo para otros tipos de imágenes si es necesario
-                break;
+    public void drawImagen() {
+        Texture things = new Texture(Gdx.files.internal("basictiles.png"));
+        for (int i=0;i<coordinateArray.length;i++){
+            switch (coordinateArray[i][2]) {
+                case 0:
+                    Animation<TextureRegion> walls = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 16));
+                    spriteBatch.draw(walls.getKeyFrame(0), coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    break;
+                case 1:
+                    Animation<TextureRegion> die = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 16));
+                    spriteBatch.draw(die.getKeyFrame(0), coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    break;
+                // Agrega más casos según sea necesario para tus tipos de imágenes
+                default:
+                    // Manejo para otros tipos de imágenes si es necesario
+                    break;
+            }
         }
     }
 
