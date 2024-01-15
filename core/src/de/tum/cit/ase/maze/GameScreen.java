@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import javax.swing.*;
@@ -50,7 +52,7 @@ public class GameScreen implements Screen {
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
         pauseFont = game.getSkin().getFont("font");
-        pauseFont.getData().setScale(0.2f);
+        pauseFont.getData().setScale(1f);
     }
 
 
@@ -155,12 +157,24 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().begin();
 
+        // Use a projection matrix set to screen coordinates
+        game.getSpriteBatch().setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        // Calculate the center of the screen
+        float centerX = Gdx.graphics.getWidth() / 2f;
+        float centerY = Gdx.graphics.getHeight() / 2f;
+
         // Adjust the text position so it's centered
-        pauseFont.draw(game.getSpriteBatch(), "Game Paused", characterX/ 2f, characterY/ 2f +100);
-        pauseFont.draw(game.getSpriteBatch(), "Press Space to resume", characterX/ 2f, characterY/ 2f +80);
-        pauseFont.draw(game.getSpriteBatch(), "Press M for Menu Screen", characterX/ 2f, characterY/ 2f +70);
-        pauseFont.draw(game.getSpriteBatch(), "Press X to quit", characterX/ 2f, characterY/ 2f +60);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Game Paused", centerX, centerY + 50);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press Space to resume", centerX, centerY);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press M for Menu Screen", centerX, centerY - 50);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press X to quit", centerX, centerY - 100);
+
+
         game.getSpriteBatch().end();
+
+        // Restore the projection matrix for game rendering
+        game.getSpriteBatch().setProjectionMatrix(camera.combined);
 
         // Handle input for the pause menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -171,6 +185,13 @@ public class GameScreen implements Screen {
             pauseFont.getData().setScale(1f);
             game.goToMenu();
         }
+    }
+
+    private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
+        GlyphLayout layout = new GlyphLayout(); // In older libGDX versions, you may need to use BitmapFont.TextBounds
+        layout.setText(font, text);
+        float textWidth = layout.width;
+        font.draw(spriteBatch, text, centerX - textWidth / 2, centerY);
     }
 
     private void togglePause() {
