@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,13 +39,14 @@ public class MenuScreen implements Screen {
 
     private final Stage stage;
     private String fileContent = ""; // String to store the content of the file
-
+    private final LoadMap loadMap;
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game) {
+    public MenuScreen(MazeRunnerGame game, LoadMap loadMap) {
+        this.loadMap = loadMap;
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
@@ -79,7 +80,7 @@ public class MenuScreen implements Screen {
                 String selectedFilePath = "";
                 File selectedFile = null;
                 String osName = System.getProperty("os.name").toLowerCase();
-
+                
                 try {
                     if (osName.contains("mac")) {
                         // macOS-specific logic to choose a file
@@ -107,8 +108,8 @@ public class MenuScreen implements Screen {
                         System.out.println("Selected File: " + selectedFilePath);
                         readFile(selectedFilePath);
                         System.out.println(getFileContent());
-                        game.setFileGame(getFileContent());
-                        game.readMap();
+                        loadMap.setFileGame(getFileContent());
+                        loadMap.readMap();
                         game.goToGame();
 
                     } else {

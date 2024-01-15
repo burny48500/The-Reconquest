@@ -21,6 +21,8 @@ import java.io.File;
 public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
+    private final Player player;
+    private final LoadMap loadMap;
     private final OrthographicCamera camera;
     private final BitmapFont font;
     private float stateTime = 0f;
@@ -36,9 +38,10 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game) {
+    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap) {
         this.game = game;
-
+        this.player = player;
+        this.loadMap = loadMap;
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
@@ -70,13 +73,13 @@ public class GameScreen implements Screen {
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
             // Draw the character at the new position based on WASD key input
             game.getSpriteBatch().draw(
-                    game.getCharacterAnimation().getKeyFrame(stateTime, isMoving),
+                    player.getCharacterAnimation().getKeyFrame(stateTime, isMoving),
                     characterX,
                     characterY,
                     10, // Width of the character
                     20 // Height of the character
             );
-            game.drawImagen();
+            loadMap.drawImagen();
             // End SpriteBatch
             game.getSpriteBatch().end();
 
@@ -97,49 +100,49 @@ public class GameScreen implements Screen {
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 characterY += speed * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.1f);
+                player.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 characterY -= speed * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.1f);
+                player.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 characterX -= speed * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.1f);
+                player.setFrameDurationCharacter(0.1f);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 characterX += speed * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.1f);
+                player.setFrameDurationCharacter(0.1f);
             }
             //Running
             if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.W)) ||
                     (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.UP))) {
                 characterY += speed * 1.5 * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.05f);
+                player.setFrameDurationCharacter(0.05f);
             }
             if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.S)) ||
                     (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
                 characterY -= speed * 1.5 * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.05f);
+                player.setFrameDurationCharacter(0.05f);
 
             }
             if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.A)) ||
                     (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
                 characterX -= speed * 1.5 * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.05f);
+                player.setFrameDurationCharacter(0.05f);
 
             }
             if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.D)) ||
                     (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))) {
                 characterX += speed * 1.5 * delta;
                 isMoving = true;
-                game.setFrameDurationCharacter(0.05f);
+                player.setFrameDurationCharacter(0.05f);
 
             }
         }
@@ -175,14 +178,14 @@ public class GameScreen implements Screen {
 
         if (isPaused) {
             // Pause logic (e.g., stop animations, pause timers)
-            game.getCharacterAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
+            player.getCharacterAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
 
             // Pause timers or other game logic
             // Example: timer.pause();
 
         } else {
             // Resume logic (e.g., resume animations, resume timers)
-            game.getCharacterAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
+            player.getCharacterAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
 
             // Resume timers or other game logic
             // Example: timer.resume();
