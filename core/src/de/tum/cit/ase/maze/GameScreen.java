@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import javax.swing.*;
@@ -98,59 +99,80 @@ public class GameScreen implements Screen {
 
         if (!isPaused) {
             isMoving = false;
-            //Normal
-            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                characterY += speed * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.1f);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                characterY -= speed * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.1f);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                characterX -= speed * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.1f);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                characterX += speed * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.1f);
-            }
-            //Running
-            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.W)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.UP))) {
-                characterY += speed * 1.5 * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.05f);
-            }
-            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.S)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.DOWN))) {
-                characterY -= speed * 1.5 * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.05f);
 
+            keysMovements(delta);
+        }
+    }
+    private boolean checkWallCollision(Rectangle newPlayerRect) {
+        // Check for collisions with walls
+        for (int i = 0; i < loadMap.getCoordinateArray().length; i++) {
+            if (loadMap.getCoordinateArray()[i][2] == 0) {
+                Rectangle wallRect = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 12);
+                if (newPlayerRect.overlaps(wallRect)) {
+                    return true; // Collision detected
+                }
             }
-            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.A)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
-                characterX -= speed * 1.5 * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.05f);
+        }
+        return false; // No collision detected
+    }
+    private void keysMovements(float delta){
+        float newCharacterX = characterX;
+        float newCharacterY = characterY;
 
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            if (!checkWallCollision(new Rectangle(newCharacterX, characterY + speed * delta, 10, 16))){
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                    characterY += speed * 1.5 * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.05f);
+                } else {
+                    characterY += speed * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.1f);
+                }
             }
-            if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.D)) ||
-                    (Gdx.input.isKeyPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))) {
-                characterX += speed * 1.5 * delta;
-                isMoving = true;
-                player.setFrameDurationCharacter(0.05f);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            if (!checkWallCollision(new Rectangle(newCharacterX, characterY - speed * delta, 10, 16))){
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                    characterY -= speed * 1.5 * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.05f);
+                }else {
+                    characterY -= speed * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.1f);
+                }
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            if (!checkWallCollision(new Rectangle(newCharacterX - speed*delta, characterY, 10, 16))){
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                    characterX -= speed * 1.5 * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.05f);
+                } else {
+                    characterX -= speed * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.1f);
+                }
 
             }
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (!checkWallCollision(new Rectangle(newCharacterX+ speed*delta, characterY, 10, 16))){
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                    characterX += speed * 1.5 * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.05f);
+                } else {
+                    characterX += speed * delta;
+                    isMoving = true;
+                    player.setFrameDurationCharacter(0.1f);
+                }
+            }
+        }
     }
-
-
     private void renderPauseMenu() {
         // Draw the pause menu overlay
         // You can use pauseFont to render text, buttons, etc.

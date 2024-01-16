@@ -24,6 +24,7 @@ public class LoadMap {
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
+        this.coordinateArray = new int[0][3];
     }
     
     public void setFileGame(String fileGame) {
@@ -78,7 +79,9 @@ public class LoadMap {
             }
         }
     }
-    
-    
+
+    public int[][] getCoordinateArray() {
+        return coordinateArray;
+    }
     
 }
