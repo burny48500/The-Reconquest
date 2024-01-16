@@ -30,7 +30,8 @@ public class MazeRunnerGame extends Game {
     private Player player;
     private SpriteBatch spriteBatch;
     private LoadMap loadMap;
- 
+    public Music backgroundMusic;
+
 
     // UI Skin
     private Skin skin;
@@ -61,9 +62,7 @@ public class MazeRunnerGame extends Game {
         player = new Player();
         // Play some background music
         // Background sound
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+
         goToMenu(); // Navigate to the menu screen
     }
 
@@ -71,6 +70,13 @@ public class MazeRunnerGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
+        if (backgroundMusic != null){
+            backgroundMusic.pause();
+        }
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("MenuScreen.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        backgroundMusic.setVolume(0.1f);
         this.setScreen(new MenuScreen(this, loadMap)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
@@ -84,11 +90,16 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        backgroundMusic.setVolume(0.1f);
         this.setScreen(new GameScreen(this, player, loadMap)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
         }
+        loadMap.setKeyCollected(false);
     }
 
     /**

@@ -61,16 +61,16 @@ public class MenuScreen implements Screen {
         table.add(new Label("Welcome to The Reconquest", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Play", game.getSkin());
+//        TextButton goToGameButton = new TextButton("Play", game.getSkin());
         TextButton selectMapButton = new TextButton("Select Map", game.getSkin());
         TextButton exitGameButton = new TextButton("Exit Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
-        goToGameButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                game.goToGame();
-            }
-        });
+//        table.add(goToGameButton).width(300).row();
+//        goToGameButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent changeEvent, Actor actor) {
+//                game.goToGame();
+//            }
+//        });
         // Show Select Map Button
         table.add(selectMapButton).width(300).row();
         // Show Select Map Button
@@ -105,13 +105,11 @@ public class MenuScreen implements Screen {
 
                     // Common file reading logic
                     if (selectedFilePath != null && !selectedFilePath.isEmpty()) {
-                        System.out.println("Selected File: " + selectedFilePath);
                         readFile(selectedFilePath);
-                        System.out.println(getFileContent());
                         loadMap.setFileGame(getFileContent());
                         loadMap.readMap();
+                        game.backgroundMusic.stop();
                         game.goToGame();
-
                     } else {
                         System.out.println("No file selected or invalid file type.");
                     }
@@ -154,8 +152,6 @@ public class MenuScreen implements Screen {
             }
 
             fileContent = stringBuilder.toString(); // Store the content in the member variable
-            System.out.println(fileContent); // or handle the content as needed
-
             scanner.close();
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + filePath);

@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -82,6 +83,7 @@ public class GameScreen implements Screen {
                     10, // Width of the character
                     20 // Height of the character
             );
+            // Draw the types of objects loaded in the map
             loadMap.drawImagen();
             // End SpriteBatch
             game.getSpriteBatch().end();
@@ -103,18 +105,44 @@ public class GameScreen implements Screen {
             keysMovements(delta);
         }
     }
+    // Method that creates rectangles in every single wall
     private boolean checkWallCollision(Rectangle newPlayerRect) {
         // Check for collisions with walls
         for (int i = 0; i < loadMap.getCoordinateArray().length; i++) {
             if (loadMap.getCoordinateArray()[i][2] == 0) {
                 Rectangle wallRect = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 12);
                 if (newPlayerRect.overlaps(wallRect)) {
-                    return true; // Collision detected
+                    return true; // Collision detected WALL
+                }
+            }
+            if (loadMap.getCoordinateArray()[i][2] == 2 && loadMap.isKeyCollected()){
+                Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
+                if (newPlayerRect.overlaps(exit)) {
+                    // HACER UNA PANTALLA QUE SE HA GANADO EL JUEGO (URKO)
+                    System.out.println("HAS GANADO!!");
+                    return true;
+                }
+            }
+            if (loadMap.getCoordinateArray()[i][2] == 3) {
+                Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 5, 5);
+                if (newPlayerRect.overlaps(static_trap)){
+                    // PIERDES UNA VIDA CUANDO LO TOCAS
+                    return true;
+                }
+            }
+            if (loadMap.getCoordinateArray()[i][2] == 5 && !loadMap.isKeyCollected()){
+                Rectangle key = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
+                if (newPlayerRect.overlaps(key)){
+                    loadMap.setKeyCollected(true);
+                    Music key_music = Gdx.audio.newMusic(Gdx.files.internal("keys_moving.mp3"));
+                    key_music.setLooping(false);
+                    key_music.play();
                 }
             }
         }
         return false; // No collision detected
     }
+    // Method that reads keys and do the movements in the coordinates of the character
     private void keysMovements(float delta){
         float newCharacterX = characterX;
         float newCharacterY = characterY;
@@ -173,6 +201,8 @@ public class GameScreen implements Screen {
             }
         }
     }
+
+    // Display Pause Menu
     private void renderPauseMenu() {
         // Draw the pause menu overlay
         // You can use pauseFont to render text, buttons, etc.
@@ -209,6 +239,7 @@ public class GameScreen implements Screen {
         }
     }
 
+    // Method for centering the text of PauseMenu
     private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
         GlyphLayout layout = new GlyphLayout(); // In older libGDX versions, you may need to use BitmapFont.TextBounds
         layout.setText(font, text);
@@ -216,6 +247,7 @@ public class GameScreen implements Screen {
         font.draw(spriteBatch, text, centerX - textWidth / 2, centerY);
     }
 
+    // It stops the game and resumes the game
     private void togglePause() {
         isPaused = !isPaused;
 
@@ -262,6 +294,7 @@ public class GameScreen implements Screen {
     public void dispose() {
     }
 
+    // Setters
     public static void setCharacterX(float characterX) {
         GameScreen.characterX = characterX;
     }

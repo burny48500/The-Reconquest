@@ -21,6 +21,7 @@ public class LoadMap {
     int[][] coordinateArray;
        // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
+    private boolean keyCollected = false;
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
@@ -38,7 +39,6 @@ public class LoadMap {
    public void readMap() {
         String archivo = fileGame;
         String[] lineas = archivo.split("\n");
-        System.out.println(archivo);
         int index = 0;
         coordinateArray = new int[lineas.length][3];
         for (String linea : lineas) {
@@ -48,6 +48,7 @@ public class LoadMap {
                 int x = Integer.parseInt(coordenadas[0])*16;
                 int y = Integer.parseInt(coordenadas[1])*16;
                 int tipoImagen = Integer.parseInt(partes[1]);
+                // Sets the character for first time.
                 if (tipoImagen == 1){
                     setCharacterX(x);
                     setCharacterY(y);
@@ -60,28 +61,47 @@ public class LoadMap {
             }
         }
     }
-   
     public void drawImagen() {
-        Texture things = new Texture(Gdx.files.internal("basictiles.png"));
+        Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
+        Texture things = new Texture(Gdx.files.internal("things.png"));
+        Texture objects = new Texture(Gdx.files.internal("objects.png"));
         for (int i=0;i<coordinateArray.length;i++){
             switch (coordinateArray[i][2]) {
-                case 0:
-                    TextureRegion walls1 = new TextureRegion(things,0,0,16,16);
-                    //Animation<TextureRegion> walls = new Animation<>(0.1f, new TextureRegion(things, 0, 0, 16, 16));
-                    spriteBatch.draw(walls1, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                case 0: // WALLS
+                    TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
+                    spriteBatch.draw(walls, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     break;
-                case 2:
+                case 2: // EXIT
+                    if (keyCollected){
+                        TextureRegion exit = new TextureRegion(things,0,32,16,16);
+                        spriteBatch.draw(exit, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    }else {
+                        TextureRegion exit = new TextureRegion(things,0,0,16,16);
+                        spriteBatch.draw(exit, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    }
                     break;
-                // Agrega más casos según sea necesario para tus tipos de imágenes
-                default:
-                    // Manejo para otros tipos de imágenes si es necesario
+                case 3: // STATIC_TRAP
+                    TextureRegion static_trap = new TextureRegion(basictiles,83,112,13,15);
+                    spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    break;
+                case 5: // KEY
+                    if (!keyCollected){
+                        TextureRegion key = new TextureRegion(objects,2,66,10,10);
+                        spriteBatch.draw(key, coordinateArray[i][0], coordinateArray[i][1], 10, 10);
+                    }
                     break;
             }
         }
     }
-
     public int[][] getCoordinateArray() {
         return coordinateArray;
+    }
+    public boolean isKeyCollected() {
+        return keyCollected;
+    }
+
+    public void setKeyCollected(boolean keyCollected) {
+        this.keyCollected = keyCollected;
     }
     
 }
