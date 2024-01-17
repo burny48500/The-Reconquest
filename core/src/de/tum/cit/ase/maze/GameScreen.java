@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 /**
@@ -26,6 +28,7 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final Player player;
+    private final Hud hud;
     private final LoadMap loadMap;
     private final OrthographicCamera camera;
     private final BitmapFont font;
@@ -42,10 +45,11 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap) {
+    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap, Hud hud) {
         this.game = game;
         this.player = player;
         this.loadMap = loadMap;
+        this.hud = hud;
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
@@ -85,6 +89,9 @@ public class GameScreen implements Screen {
             );
             // Draw the types of objects loaded in the map
             loadMap.drawImagen();
+
+            // Draw the hearts
+
             // End SpriteBatch
             game.getSpriteBatch().end();
 
@@ -115,11 +122,13 @@ public class GameScreen implements Screen {
                     return true; // Collision detected WALL
                 }
             }
-            if (loadMap.getCoordinateArray()[i][2] == 2 && loadMap.isKeyCollected()){
+            if (loadMap.getCoordinateArray()[i][2] == 2){
                 Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
-                if (newPlayerRect.overlaps(exit)) {
+                if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
                     // HACER UNA PANTALLA QUE SE HA GANADO EL JUEGO (URKO)
                     System.out.println("HAS GANADO!!");
+                }
+                if (newPlayerRect.overlaps(exit) && !loadMap.isKeyCollected()){
                     return true;
                 }
             }
@@ -127,6 +136,7 @@ public class GameScreen implements Screen {
                 Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 5, 5);
                 if (newPlayerRect.overlaps(static_trap)){
                     // PIERDES UNA VIDA CUANDO LO TOCAS
+                    hud.loseLive();
                     return true;
                 }
             }

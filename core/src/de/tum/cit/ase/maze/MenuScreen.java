@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -38,14 +39,19 @@ import java.util.Scanner;
 public class MenuScreen implements Screen {
 
     private final Stage stage;
+    private final MazeRunnerGame game;
     private String fileContent = ""; // String to store the content of the file
     private final LoadMap loadMap;
+    private Texture menuScreenBackground;
+
+
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
      */
     public MenuScreen(MazeRunnerGame game, LoadMap loadMap) {
+        this.game = game;
         this.loadMap = loadMap;
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
@@ -59,6 +65,9 @@ public class MenuScreen implements Screen {
 
         // Add a label as a title
         table.add(new Label("Welcome to The Reconquest", game.getSkin(), "title")).padBottom(80).row();
+
+        menuScreenBackground = new Texture(Gdx.files.internal("menuScreenBackground.png"));
+
 
         // Create and add a button to go to the game screen
 //        TextButton goToGameButton = new TextButton("Play", game.getSkin());
@@ -161,8 +170,14 @@ public class MenuScreen implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
-        stage.draw(); // Draw the stage
+
+        // Draw the background
+        game.getSpriteBatch().begin();
+        game.getSpriteBatch().draw(menuScreenBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.getSpriteBatch().end();
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     @Override
@@ -173,6 +188,7 @@ public class MenuScreen implements Screen {
     @Override
     public void dispose() {
         // Dispose of the stage when screen is disposed
+        menuScreenBackground.dispose();
         stage.dispose();
     }
 

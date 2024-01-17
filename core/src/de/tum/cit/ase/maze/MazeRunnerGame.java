@@ -30,13 +30,14 @@ public class MazeRunnerGame extends Game {
     private Player player;
     private SpriteBatch spriteBatch;
     private LoadMap loadMap;
+    private Hud hud;
     public Music backgroundMusic;
 
 
     // UI Skin
     private Skin skin;
 
-    
+
 
     /**
      * Constructor for MazeRunnerGame.
@@ -52,14 +53,16 @@ public class MazeRunnerGame extends Game {
      */
     @Override
     public void create() {
-        
+
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         loadMap = new LoadMap(spriteBatch);
-        
+
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
         //this.loadCharacterAnimation(); // Load character animation
-            
+
         player = new Player();
+        hud = new Hud();
+
         // Play some background music
         // Background sound
 
@@ -83,8 +86,8 @@ public class MazeRunnerGame extends Game {
             gameScreen = null;
         }
     }
-    
-   
+
+
 
     /**
      * Switches to the game screen.
@@ -94,7 +97,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         backgroundMusic.setVolume(0.1f);
-        this.setScreen(new GameScreen(this, player, loadMap)); // Set the current screen to GameScreen
+        this.setScreen(new GameScreen(this, player, loadMap,hud)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
@@ -106,7 +109,7 @@ public class MazeRunnerGame extends Game {
      * Loads the character animation from the character.png file.
      */
     void loadCharacterAnimation() {
-      
+
         player.loadCharacterAnimation();
 
     }
@@ -127,11 +130,11 @@ public class MazeRunnerGame extends Game {
         return skin;
     }
 
-    
+
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
 
-   
+
 }
