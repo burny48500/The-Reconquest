@@ -32,7 +32,7 @@ public class MazeRunnerGame extends Game {
     private LoadMap loadMap;
     private Hud hud;
     public Music backgroundMusic;
-
+    public final NativeFileChooser fileChooser;
 
     // UI Skin
     private Skin skin;
@@ -46,6 +46,7 @@ public class MazeRunnerGame extends Game {
      */
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
+        this.fileChooser = fileChooser;
     }
 
     /**
@@ -136,5 +137,7 @@ public class MazeRunnerGame extends Game {
         return spriteBatch;
     }
 
-
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
 }
