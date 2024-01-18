@@ -30,7 +30,6 @@ public class LoadMap {
         this.spriteBatch = spriteBatch;
         this.coordinateArray = new int[0][3];
     }
-    
     public void setFileGame(String fileGame) {
         this.fileGame = fileGame;
     }

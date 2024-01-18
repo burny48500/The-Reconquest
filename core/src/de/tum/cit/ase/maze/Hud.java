@@ -30,7 +30,6 @@ public class Hud {
                     spriteBatch.draw(hearts, 0, -3, 8, 8);
         }
 
-
     }
 
     public void dispose() {

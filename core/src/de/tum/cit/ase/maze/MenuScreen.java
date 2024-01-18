@@ -38,7 +38,6 @@ import java.util.Scanner;
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
  */
 public class MenuScreen implements Screen {
-
     private final Stage stage;
     private final MazeRunnerGame game;
     private String fileContent = ""; // String to store the content of the file

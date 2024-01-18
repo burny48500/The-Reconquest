@@ -78,7 +78,6 @@ public class MazeRunnerGame extends Game {
 
         goToMenu(); // Navigate to the menu screen
     }
-
     /**
      * Switches to the menu screen.
      */
