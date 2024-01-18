@@ -22,6 +22,8 @@ public class Player extends Game {
     private int selectedCharacterColumn = 0; // Column index of the third character (0-based index)
     private int selectedCharacterRow = 0;    // Row index of the selected character (0-based index)
     private float frameDurationCharacter = 0.1f;
+    private Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
+
 
     // Character animation downwards
     private Animation<TextureRegion> CharacterAnimation;
@@ -32,7 +34,6 @@ public class Player extends Game {
     }
  
     public void loadCharacterAnimation(){
-          Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
 
         int frameWidth = 16;
         int frameHeight = 32;

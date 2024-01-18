@@ -22,6 +22,9 @@ public class LoadMap {
        // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
     private boolean keyCollected = false;
+    private Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
+    private Texture things = new Texture(Gdx.files.internal("things.png"));
+    private Texture objects = new Texture(Gdx.files.internal("objects.png"));
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
@@ -62,9 +65,6 @@ public class LoadMap {
         }
     }
     public void drawImagen() {
-        Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
-        Texture things = new Texture(Gdx.files.internal("things.png"));
-        Texture objects = new Texture(Gdx.files.internal("objects.png"));
         for (int i=0;i<coordinateArray.length;i++){
             switch (coordinateArray[i][2]) {
                 case 0: // WALLS
