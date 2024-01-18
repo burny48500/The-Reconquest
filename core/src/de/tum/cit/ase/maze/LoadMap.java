@@ -81,8 +81,8 @@ public class LoadMap {
                     }
                     break;
                 case 3: // STATIC_TRAP
-                    TextureRegion static_trap = new TextureRegion(basictiles,83,112,13,15);
-                    spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
+                    spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
                     break;
                 case 5: // KEY
                     if (!keyCollected){

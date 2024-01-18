@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +35,7 @@ public class MazeRunnerGame extends Game {
     public Music backgroundMusic;
     public final NativeFileChooser fileChooser;
 
+
     // UI Skin
     private Skin skin;
 
@@ -62,14 +64,16 @@ public class MazeRunnerGame extends Game {
         //this.loadCharacterAnimation(); // Load character animation
 
         player = new Player();
-        hud = new Hud();
+        gameScreen = new GameScreen(this, player, loadMap);
+
+        hud = new Hud(gameScreen,spriteBatch,loadMap);
+        gameScreen.setHud(hud);
 
         // Play some background music
         // Background sound
 
         goToMenu(); // Navigate to the menu screen
     }
-
     /**
      * Switches to the menu screen.
      */
@@ -94,11 +98,12 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        hud.setNumberOfLives(3);
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         backgroundMusic.setVolume(0.1f);
-        this.setScreen(new GameScreen(this, player, loadMap,hud)); // Set the current screen to GameScreen
+        this.setScreen(new GameScreen(this, player, loadMap)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
@@ -110,9 +115,7 @@ public class MazeRunnerGame extends Game {
      * Loads the character animation from the character.png file.
      */
     void loadCharacterAnimation() {
-
         player.loadCharacterAnimation();
-
     }
 
     /**
@@ -126,18 +129,21 @@ public class MazeRunnerGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
-    // Getter methods
+    /**
+     * Getter methods
+     */
     public Skin getSkin() {
         return skin;
     }
 
-
-
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
-
     public NativeFileChooser getFileChooser() {
         return fileChooser;
     }
+    public Hud getHud() {
+        return hud;
+    }
+
 }

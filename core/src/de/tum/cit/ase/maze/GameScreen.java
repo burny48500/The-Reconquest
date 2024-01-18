@@ -28,10 +28,9 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final Player player;
-    private final Hud hud;
+    private Hud hud;
     private final LoadMap loadMap;
     private final OrthographicCamera camera;
-    private final BitmapFont font;
     private float stateTime = 0f;
     private static float characterX = 0;
     private static float characterY = 0;
@@ -39,24 +38,24 @@ public class GameScreen implements Screen {
     private boolean isMoving;
     private boolean isPaused = false;
     private BitmapFont pauseFont;
+    private long lastTrapActivationTime = 0;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap, Hud hud) {
+    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap) {
         this.game = game;
         this.player = player;
         this.loadMap = loadMap;
-        this.hud = hud;
+        this.hud = game.getHud();
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
         camera.zoom = 0.15f;
 
         // Get the font from the game's skin
-        font = game.getSkin().getFont("font");
         pauseFont = game.getSkin().getFont("font");
         pauseFont.getData().setScale(1f);
     }
@@ -91,6 +90,9 @@ public class GameScreen implements Screen {
             loadMap.drawImagen();
 
             // Draw the hearts
+            hud.showLives();
+            // Draw the keys
+            hud.showKey();
 
             // End SpriteBatch
             game.getSpriteBatch().end();
@@ -122,24 +124,37 @@ public class GameScreen implements Screen {
                     return true; // Collision detected WALL
                 }
             }
+
             if (loadMap.getCoordinateArray()[i][2] == 2){
                 Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
                     // HACER UNA PANTALLA QUE SE HA GANADO EL JUEGO (URKO)
                     System.out.println("HAS GANADO!!");
+                    loadMap.setKeyCollected(false);
                 }
                 if (newPlayerRect.overlaps(exit) && !loadMap.isKeyCollected()){
                     return true;
                 }
             }
+
             if (loadMap.getCoordinateArray()[i][2] == 3) {
-                Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 5, 5);
-                if (newPlayerRect.overlaps(static_trap)){
-                    // PIERDES UNA VIDA CUANDO LO TOCAS
-                    hud.loseLive();
-                    return true;
+                Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+3, loadMap.getCoordinateArray()[i][1]+2, 8, 6);
+                if (newPlayerRect.overlaps(static_trap)) {
+                    long currentTime = System.currentTimeMillis();
+
+                    // Check if enough time has passed since the last activation
+                    if (currentTime - lastTrapActivationTime >= 3000) {
+                        // Perform the action
+                        hud.loseLive();
+                        Music key_music = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.mp3"));
+                        key_music.setLooping(false);
+                        key_music.play();
+                        // Update the last activation time
+                        lastTrapActivationTime = currentTime;
+                    }
                 }
             }
+
             if (loadMap.getCoordinateArray()[i][2] == 5 && !loadMap.isKeyCollected()){
                 Rectangle key = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(key)){
@@ -152,6 +167,7 @@ public class GameScreen implements Screen {
         }
         return false; // No collision detected
     }
+
     // Method that reads keys and do the movements in the coordinates of the character
     private void keysMovements(float delta){
         float newCharacterX = characterX;
@@ -250,7 +266,7 @@ public class GameScreen implements Screen {
     }
 
     // Method for centering the text of PauseMenu
-    private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
+    public void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
         GlyphLayout layout = new GlyphLayout(); // In older libGDX versions, you may need to use BitmapFont.TextBounds
         layout.setText(font, text);
         float textWidth = layout.width;
@@ -311,6 +327,22 @@ public class GameScreen implements Screen {
 
     public static void setCharacterY(float characterY) {
         GameScreen.characterY = characterY;
+    }
+
+    public float getCharacterX() {
+        return characterX;
+    }
+
+    public float getCharacterY() {
+        return characterY;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setHud(Hud hud) {
+        this.hud = hud;
     }
     // Additional methods and logic can be added as needed for the game screen
 }
