@@ -28,8 +28,9 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final Player player;
-    private final Hud hud;
+    private Hud hud;
     private final LoadMap loadMap;
+
     private final OrthographicCamera camera;
     private final BitmapFont font;
     private float stateTime = 0f;
@@ -45,11 +46,11 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap, Hud hud) {
+    public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap) {
         this.game = game;
         this.player = player;
         this.loadMap = loadMap;
-        this.hud = hud;
+        this.hud = game.getHud();
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
@@ -91,6 +92,7 @@ public class GameScreen implements Screen {
             loadMap.drawImagen();
 
             // Draw the hearts
+            hud.showLives();
 
             // End SpriteBatch
             game.getSpriteBatch().end();
@@ -127,6 +129,7 @@ public class GameScreen implements Screen {
                 if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
                     // HACER UNA PANTALLA QUE SE HA GANADO EL JUEGO (URKO)
                     System.out.println("HAS GANADO!!");
+                    loadMap.setKeyCollected(false);
                 }
                 if (newPlayerRect.overlaps(exit) && !loadMap.isKeyCollected()){
                     return true;
@@ -250,7 +253,7 @@ public class GameScreen implements Screen {
     }
 
     // Method for centering the text of PauseMenu
-    private void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
+    public void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
         GlyphLayout layout = new GlyphLayout(); // In older libGDX versions, you may need to use BitmapFont.TextBounds
         layout.setText(font, text);
         float textWidth = layout.width;
@@ -311,6 +314,22 @@ public class GameScreen implements Screen {
 
     public static void setCharacterY(float characterY) {
         GameScreen.characterY = characterY;
+    }
+
+    public float getCharacterX() {
+        return characterX;
+    }
+
+    public float getCharacterY() {
+        return characterY;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setHud(Hud hud) {
+        this.hud = hud;
     }
     // Additional methods and logic can be added as needed for the game screen
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,7 @@ public class MazeRunnerGame extends Game {
     private LoadMap loadMap;
     private Hud hud;
     public Music backgroundMusic;
+    public final NativeFileChooser fileChooser;
 
 
     // UI Skin
@@ -46,6 +48,11 @@ public class MazeRunnerGame extends Game {
      */
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
+        this.fileChooser = fileChooser;
+    }
+
+    public Hud getHud() {
+        return hud;
     }
 
     /**
@@ -61,7 +68,10 @@ public class MazeRunnerGame extends Game {
         //this.loadCharacterAnimation(); // Load character animation
 
         player = new Player();
-        hud = new Hud();
+        gameScreen = new GameScreen(this, player, loadMap);
+
+        hud = new Hud(gameScreen,spriteBatch);
+        gameScreen.setHud(hud);
 
         // Play some background music
         // Background sound
@@ -97,7 +107,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         backgroundMusic.setVolume(0.1f);
-        this.setScreen(new GameScreen(this, player, loadMap,hud)); // Set the current screen to GameScreen
+        this.setScreen(new GameScreen(this, player, loadMap)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
@@ -135,6 +145,8 @@ public class MazeRunnerGame extends Game {
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
-
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
 
 }
