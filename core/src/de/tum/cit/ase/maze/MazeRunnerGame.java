@@ -51,10 +51,6 @@ public class MazeRunnerGame extends Game {
         this.fileChooser = fileChooser;
     }
 
-    public Hud getHud() {
-        return hud;
-    }
-
     /**
      * Called when the game is created. Initializes the SpriteBatch and Skin.
      */
@@ -70,7 +66,7 @@ public class MazeRunnerGame extends Game {
         player = new Player();
         gameScreen = new GameScreen(this, player, loadMap);
 
-        hud = new Hud(gameScreen,spriteBatch);
+        hud = new Hud(gameScreen,spriteBatch,loadMap);
         gameScreen.setHud(hud);
 
         // Play some background music
@@ -102,6 +98,7 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        hud.setNumberOfLives(3);
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
@@ -118,9 +115,7 @@ public class MazeRunnerGame extends Game {
      * Loads the character animation from the character.png file.
      */
     void loadCharacterAnimation() {
-
         player.loadCharacterAnimation();
-
     }
 
     /**
@@ -134,18 +129,21 @@ public class MazeRunnerGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
-    // Getter methods
+    /**
+     * Getter methods
+     */
     public Skin getSkin() {
         return skin;
     }
-
-
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
     public NativeFileChooser getFileChooser() {
         return fileChooser;
+    }
+    public Hud getHud() {
+        return hud;
     }
 
 }
