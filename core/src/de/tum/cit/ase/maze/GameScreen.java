@@ -152,6 +152,10 @@ public class GameScreen implements Screen {
                         // Update the last activation time
                         lastTrapActivationTime = currentTime;
                     }
+                    if (hud.getNumberOfLives()==0){
+                        game.goToMenu();
+                        System.out.println("HAS PERDIDO..");
+                    }
                 }
             }
 
