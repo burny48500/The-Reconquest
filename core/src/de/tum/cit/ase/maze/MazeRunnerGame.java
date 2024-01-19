@@ -124,6 +124,17 @@ public class MazeRunnerGame extends Game {
         }
     }
 
+    public void goToWinScreen() {
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        backgroundMusic.setVolume(0.1f);
+        this.setScreen(new WinScreen(this)); // Set the current screen to MenuScreen
+        if (gameScreen != null) {
+            gameScreen.dispose(); // Dispose the game screen if it exists
+            gameScreen = null;
+        }
+    }
 
     /**
      * Loads the character animation from the character.png file.

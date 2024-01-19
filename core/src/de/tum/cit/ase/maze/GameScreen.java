@@ -128,8 +128,7 @@ public class GameScreen implements Screen {
             if (loadMap.getCoordinateArray()[i][2] == 2){
                 Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
-                    // HACER UNA PANTALLA QUE SE HA GANADO EL JUEGO (URKO)
-                    System.out.println("HAS GANADO!!");
+                    game.goToWinScreen();
                     loadMap.setKeyCollected(false);
                 }
                 if (newPlayerRect.overlaps(exit) && !loadMap.isKeyCollected()){
@@ -142,7 +141,6 @@ public class GameScreen implements Screen {
                 if (newPlayerRect.overlaps(static_trap)) {
                     long currentTime = System.currentTimeMillis();
 
-                    // Check if enough time has passed since the last activation
                     if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
@@ -154,7 +152,6 @@ public class GameScreen implements Screen {
                     }
                     if (hud.getNumberOfLives()==0){
                         game.goToGameOver();
-                        System.out.println("HAS PERDIDO...");
                     }
                 }
             }

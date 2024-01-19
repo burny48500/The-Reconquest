@@ -47,7 +47,7 @@ public class WinScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("WIN!", game.getSkin(), "title")).padBottom(100).row();
+        table.add(new Label("You won!", game.getSkin(), "title")).padBottom(100).row();
 
         // Add a button to go to the main menu
         TextButton menuScreenButton = new TextButton("Go to Menu", game.getSkin());
