@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
+
 import static de.tum.cit.ase.maze.GameScreen.setCharacterX;
 import static de.tum.cit.ase.maze.GameScreen.setCharacterY;
 
@@ -19,18 +17,24 @@ public class LoadMap {
 
     private String fileGame;
     int[][] coordinateArray;
-       // Sprite Batch for rendering
+    // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
     private boolean keyCollected = false;
     private Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
     private Texture things = new Texture(Gdx.files.internal("things.png"));
     private Texture objects = new Texture(Gdx.files.internal("objects.png"));
+    private TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
+    private TextureRegion exit = new TextureRegion(things,0,32,16,16);
+    private TextureRegion exitOpen = new TextureRegion(things,0,0,16,16);
+    private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
+    private TextureRegion key = new TextureRegion(objects,2,66,10,10);
+
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
         this.coordinateArray = new int[0][3];
     }
-    
+
     public void setFileGame(String fileGame) {
         this.fileGame = fileGame;
     }
@@ -39,7 +43,7 @@ public class LoadMap {
         return fileGame;
     }
 
-   public void readMap() {
+    public void readMap() {
         String archivo = fileGame;
         String[] lineas = archivo.split("\n");
         int index = 0;
@@ -68,25 +72,20 @@ public class LoadMap {
         for (int i=0;i<coordinateArray.length;i++){
             switch (coordinateArray[i][2]) {
                 case 0: // WALLS
-                    TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
                     spriteBatch.draw(walls, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     break;
                 case 2: // EXIT
                     if (keyCollected){
-                        TextureRegion exit = new TextureRegion(things,0,32,16,16);
                         spriteBatch.draw(exit, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     }else {
-                        TextureRegion exit = new TextureRegion(things,0,0,16,16);
-                        spriteBatch.draw(exit, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                        spriteBatch.draw(exitOpen, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     }
                     break;
                 case 3: // STATIC_TRAP
-                    TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
                     spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
                     break;
                 case 5: // KEY
                     if (!keyCollected){
-                        TextureRegion key = new TextureRegion(objects,2,66,10,10);
                         spriteBatch.draw(key, coordinateArray[i][0], coordinateArray[i][1], 10, 10);
                     }
                     break;
@@ -103,5 +102,5 @@ public class LoadMap {
     public void setKeyCollected(boolean keyCollected) {
         this.keyCollected = keyCollected;
     }
-    
+
 }
