@@ -84,7 +84,7 @@ public class MenuScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Welcome to The Reconquest", game.getSkin(), "title")).padBottom(100).row();
+        table.add(new Label("WELCOME TO THE RECONQUEST", game.getSkin(), "title")).padBottom(100).row();
         TextButton playRandomButton = new TextButton("Play", game.getSkin());
         TextButton selectMapButton = new TextButton("Select Map", game.getSkin());
         TextButton exitGameButton = new TextButton("Exit Game", game.getSkin());

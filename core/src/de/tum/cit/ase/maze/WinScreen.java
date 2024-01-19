@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameOverScreen implements Screen {
+public class WinScreen implements Screen {
     private final MazeRunnerGame game;
     private Stage stage;
     private Sprite backgroundSprite;
@@ -25,7 +25,7 @@ public class GameOverScreen implements Screen {
 
 
 
-    public GameOverScreen(MazeRunnerGame game) {
+    public WinScreen(MazeRunnerGame game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport()); // Initialize the stage here
 
@@ -47,7 +47,7 @@ public class GameOverScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("GAME OVER!", game.getSkin(), "title")).padBottom(100).row();
+        table.add(new Label("WIN!", game.getSkin(), "title")).padBottom(100).row();
 
         // Add a button to go to the main menu
         TextButton menuScreenButton = new TextButton("Go to Menu", game.getSkin());
