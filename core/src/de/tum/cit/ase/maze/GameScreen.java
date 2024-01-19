@@ -143,7 +143,7 @@ public class GameScreen implements Screen {
                     long currentTime = System.currentTimeMillis();
 
                     // Check if enough time has passed since the last activation
-                    if (currentTime - lastTrapActivationTime >= 3000) {
+                    if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
                         Music key_music = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.mp3"));
@@ -153,8 +153,8 @@ public class GameScreen implements Screen {
                         lastTrapActivationTime = currentTime;
                     }
                     if (hud.getNumberOfLives()==0){
-                        game.goToMenu();
-                        System.out.println("HAS PERDIDO..");
+                        game.goToGameOver();
+                        System.out.println("HAS PERDIDO...");
                     }
                 }
             }

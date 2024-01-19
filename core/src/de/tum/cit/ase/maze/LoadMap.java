@@ -54,7 +54,7 @@ public class LoadMap {
                 String[] coordenadas = partes[0].split(",");
                 int x = Integer.parseInt(coordenadas[0])*16;
                 int y = Integer.parseInt(coordenadas[1])*16;
-                int tipoImagen = Integer.parseInt(partes[1]);
+                int tipoImagen = Integer.parseInt(partes[1].trim());
                 // Sets the character for first time.
                 if (tipoImagen == 1){
                     setCharacterX(x);
