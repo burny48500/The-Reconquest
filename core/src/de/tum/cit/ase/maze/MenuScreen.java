@@ -6,6 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,6 +48,8 @@ public class MenuScreen implements Screen {
     private Texture menuScreenBackground;
     private SpriteBatch batch;
     private NativeFileChooser fileChooser;
+    private Sprite backgroundSprite;
+
 
 
     /**
@@ -59,29 +64,34 @@ public class MenuScreen implements Screen {
     public MenuScreen(MazeRunnerGame game, LoadMap loadMap) {
         this.game = game;
         this.loadMap = loadMap;
-        var camera = new OrthographicCamera();
-        camera.zoom = 1.5f; // Set camera zoom for a closer view
 
-        menuScreenBackground = new Texture("menuScreenBackground.png");
-        menuScreenBackground.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        batch = new SpriteBatch();
-        Viewport viewport = new ScreenViewport(camera);
-        stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
+        OrthographicCamera camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        Texture backgroundImage = new Texture(Gdx.files.internal("menuScreenBackground.png"));
+        backgroundSprite = new Sprite(backgroundImage);
+        Viewport viewport = new ExtendViewport(1920, 1280, camera);
+        stage = new Stage(viewport, game.getSpriteBatch());
+        backgroundSprite.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch = game.getSpriteBatch();
+
+
+
 
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Welcome to The Reconquest", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("WELCOME TO THE RECONQUEST", game.getSkin(), "title")).padBottom(100).row();
         TextButton playRandomButton = new TextButton("Play", game.getSkin());
         TextButton selectMapButton = new TextButton("Select Map", game.getSkin());
         TextButton exitGameButton = new TextButton("Exit Game", game.getSkin());
 
         // Show Select Map Button
-        table.add(playRandomButton).width(300).row();
-        table.add(selectMapButton).width(300).row();
-        table.add(exitGameButton).width(300).row();
+        table.add(playRandomButton).width(viewport.getWorldWidth() * 0.2f).height(viewport.getWorldHeight() * 0.07f).row();
+        table.add(selectMapButton).width(viewport.getWorldWidth() * 0.2f).height(viewport.getWorldHeight() * 0.07f).row();
+        table.add(exitGameButton).width(viewport.getWorldWidth() * 0.2f).height(viewport.getWorldHeight() * 0.07f).row();
         exitGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -95,8 +105,8 @@ public class MenuScreen implements Screen {
                 int min = 1; // Minimum value of range
                 int max = 5; // Maximum value of range
                 // Generate random int value from min to max
-                int randomNum = (int)Math.floor(Math.random() * (max - min + 1) + min);
-                String mapFilePath = "maps/level-"+randomNum+".properties";
+                int randomNum = (int) Math.floor(Math.random() * (max - min + 1) + min);
+                String mapFilePath = "maps/level-" + randomNum + ".properties";
                 FileHandle mapFile = Gdx.files.internal(mapFilePath);
 
                 // Check if the file exists to avoid errors
@@ -167,20 +177,19 @@ public class MenuScreen implements Screen {
     }
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        batch.setProjectionMatrix(stage.getCamera().combined);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(menuScreenBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundSprite.draw(batch);
         batch.end();
+        stage.act(delta);
         stage.draw();
     }
 
-
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true); // Update the stage viewport on resize
-        stage.getCamera().position.set(stage.getCamera().viewportWidth / 2f, stage.getCamera().viewportHeight / 2f, 0);
+        stage.getViewport().update(width, height, true);
+        backgroundSprite.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
     }
 
     @Override

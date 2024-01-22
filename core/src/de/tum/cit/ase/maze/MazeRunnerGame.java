@@ -41,6 +41,7 @@ public class MazeRunnerGame extends Game {
 
 
 
+
     /**
      * Constructor for MazeRunnerGame.
      *
@@ -85,14 +86,13 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         backgroundMusic.setVolume(0.1f);
-        this.setScreen(new MenuScreen(this, loadMap)); // Set the current screen to MenuScreen
+        menuScreen = new MenuScreen(this, loadMap);
+        this.setScreen(menuScreen); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
         }
     }
-
-
 
     /**
      * Switches to the game screen.
@@ -109,6 +109,31 @@ public class MazeRunnerGame extends Game {
             menuScreen = null;
         }
         loadMap.setKeyCollected(false);
+    }
+
+
+    public void goToGameOver() {
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        backgroundMusic.setVolume(0.1f);
+        this.setScreen(new GameOverScreen(this)); // Set the current screen to MenuScreen
+        if (gameScreen != null) {
+            gameScreen.dispose(); // Dispose the game screen if it exists
+            gameScreen = null;
+        }
+    }
+
+    public void goToWinScreen() {
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        backgroundMusic.setVolume(0.1f);
+        this.setScreen(new WinScreen(this)); // Set the current screen to MenuScreen
+        if (gameScreen != null) {
+            gameScreen.dispose(); // Dispose the game screen if it exists
+            gameScreen = null;
+        }
     }
 
     /**
