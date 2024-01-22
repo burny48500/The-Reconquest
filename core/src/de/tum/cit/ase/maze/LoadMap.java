@@ -2,9 +2,14 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Random;
 
 import static de.tum.cit.ase.maze.GameScreen.setCharacterX;
 import static de.tum.cit.ase.maze.GameScreen.setCharacterY;
@@ -31,9 +36,14 @@ public class LoadMap {
     private TextureRegion exit = new TextureRegion(things,0,32,16,16);
     private TextureRegion exitOpen = new TextureRegion(things,0,0,16,16);
     private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
-    private TextureRegion dynamic_trap = new TextureRegion(mobs,96,63,16,10);
+    //private TextureRegion dynamic_trap = new TextureRegion(mobs,96,63,16,10);
     private TextureRegion key = new TextureRegion(objects,2,66,10,10);
     private int maximumX,maximumY = 0;
+    private float elapsed;
+    private Animation<TextureRegion> spike_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("spike_trap.gif").read());
+    private Animation<TextureRegion> dynamic_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dynamic_ghost.gif").read());
+    private Random random = new Random();
+    private Vector2 targetPosition = new Vector2();
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
@@ -49,6 +59,8 @@ public class LoadMap {
     }
 
     public void readMap() {
+        maximumX = 1;
+        maximumY = 1;
         String archivo = fileGame;
         String[] lineas = archivo.split("\n");
         int index = 0;
@@ -74,6 +86,59 @@ public class LoadMap {
             }
         }
     }
+    public void runDynamicTrap(int i) {
+        float speed = 30.0f;
+
+        // If the trap is close to the target position, choose a new target
+        if (targetPosition.dst(coordinateArray[i][0], coordinateArray[i][1]) < 5.0f || Gdx.graphics.getDeltaTime() == 0) {
+            chooseNewTarget(i);
+        }
+
+        // Calculate the direction towards the target position
+        float angle = MathUtils.atan2(targetPosition.y - coordinateArray[i][1], targetPosition.x - coordinateArray[i][0]);
+
+        // Calculate the movement components
+        float deltaX = speed * Gdx.graphics.getDeltaTime() * MathUtils.cos(angle);
+        float deltaY = speed * Gdx.graphics.getDeltaTime() * MathUtils.sin(angle);
+
+        // Update the position
+        coordinateArray[i][0] += deltaX;
+        coordinateArray[i][1] += deltaY;
+
+        // Wrap the position around the map if it goes out of bounds
+        coordinateArray[i][0] = (coordinateArray[i][0] + maximumX * 16) % (maximumX * 16);
+        coordinateArray[i][1] = (coordinateArray[i][1] + maximumY * 16) % (maximumY * 16);
+
+        // Draw the dynamic trap
+        elapsed += Gdx.graphics.getDeltaTime() * 0.015;
+        spriteBatch.draw(dynamic_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 32, 24);
+    }
+
+    private void chooseNewTarget(int i) {
+        // Set a new target position randomly
+        targetPosition.set(random.nextFloat() * maximumX * 16, random.nextFloat() * maximumY * 16);
+
+        // Adjust the target position to avoid going outside the map
+        targetPosition.x = MathUtils.clamp(targetPosition.x, 0, maximumX * 16);
+        targetPosition.y = MathUtils.clamp(targetPosition.y, 0, maximumY * 16);
+
+        // If the new target is close to a wall, choose a new target
+        while (isTargetNearWall()) {
+            targetPosition.set(random.nextFloat() * maximumX * 16, random.nextFloat() * maximumY * 16);
+            targetPosition.x = MathUtils.clamp(targetPosition.x, 0, maximumX * 16);
+            targetPosition.y = MathUtils.clamp(targetPosition.y, 0, maximumY * 16);
+        }
+    }
+
+    private boolean isTargetNearWall() {
+        // Check if the target position is close to a wall (you may need to adjust the threshold)
+        for (int j = 0; j < coordinateArray.length; j++) {
+            if (coordinateArray[j][2] == 0 && targetPosition.dst(coordinateArray[j][0], coordinateArray[j][1]) < 20.0f) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void drawImagen() {
         for (int x=0;x<maximumX*16;x=x+16) {
             for (int y = 0; y < maximumY*16; y=y+16) {
@@ -96,10 +161,11 @@ public class LoadMap {
                     }
                     break;
                 case 3: // STATIC_TRAP
-                    spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
+                    elapsed += Gdx.graphics.getDeltaTime()*0.05;
+                    spriteBatch.draw(spike_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 16, 12);
                     break;
                 case 4:
-                    spriteBatch.draw(dynamic_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
+                    runDynamicTrap(i);
                     break;
                 case 5: // KEY
                     if (!keyCollected){

@@ -140,7 +140,7 @@ public class GameScreen implements Screen {
                 if (newPlayerRect.overlaps(static_trap)) {
                     long currentTime = System.currentTimeMillis();
 
-                    if (currentTime - lastTrapActivationTime >= 2000) {
+                    if (currentTime - lastTrapActivationTime >= 1000) {
                         // Perform the action
                         hud.loseLive();
                         Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("SpikeTrapFx.mp3"));
@@ -155,6 +155,25 @@ public class GameScreen implements Screen {
                 }
             }
 
+            if (loadMap.getCoordinateArray()[i][2] == 4 && !loadMap.isKeyCollected()){
+                Rectangle dynamic_trap = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 4, 4);
+                if (newPlayerRect.overlaps(dynamic_trap)){
+                    long currentTime = System.currentTimeMillis();
+
+                    if (currentTime - lastTrapActivationTime >= 500) {
+                        // Perform the action
+                        hud.loseLive();
+                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.mp3"));
+                        spikeTrapFx.setLooping(false);
+                        spikeTrapFx.play();
+                        // Update the last activation time
+                        lastTrapActivationTime = currentTime;
+                    }
+                    if (hud.getNumberOfLives()==0){
+                        game.goToGameOver();
+                    }
+                }
+            }
             if (loadMap.getCoordinateArray()[i][2] == 5 && !loadMap.isKeyCollected()){
                 Rectangle key = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(key)){
