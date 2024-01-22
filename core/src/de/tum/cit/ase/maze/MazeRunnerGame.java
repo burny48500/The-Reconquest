@@ -85,7 +85,6 @@ public class MazeRunnerGame extends Game {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("MenuScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-        backgroundMusic.setVolume(0.1f);
         menuScreen = new MenuScreen(this, loadMap);
         this.setScreen(menuScreen); // Set the current screen to MenuScreen
         if (gameScreen != null) {
@@ -105,7 +104,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-        backgroundMusic.setVolume(0.1f);
+        backgroundMusic.setVolume(1f);
         this.setScreen(new GameScreen(this, player, loadMap)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
@@ -119,8 +118,9 @@ public class MazeRunnerGame extends Game {
         if (backgroundMusic != null){
             backgroundMusic.pause();
         }
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
-        backgroundMusic.setLooping(true);
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameOverSoundFx.mp3"));
+        backgroundMusic.stop();
+        backgroundMusic.setLooping(false);
         backgroundMusic.play();
         backgroundMusic.setVolume(0.1f);
         this.setScreen(new GameOverScreen(this)); // Set the current screen to MenuScreen
@@ -131,6 +131,9 @@ public class MazeRunnerGame extends Game {
     }
 
     public void goToWinScreen() {
+        if (backgroundMusic != null){
+            backgroundMusic.pause();
+        }
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
@@ -178,3 +181,4 @@ public class MazeRunnerGame extends Game {
     }
 
 }
+

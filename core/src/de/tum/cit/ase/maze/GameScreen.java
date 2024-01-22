@@ -143,9 +143,9 @@ public class GameScreen implements Screen {
                     if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
-                        Music key_music = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.mp3"));
-                        key_music.setLooping(false);
-                        key_music.play();
+                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.wav"));
+                        spikeTrapFx.setLooping(false);
+                        spikeTrapFx.play();
                         // Update the last activation time
                         lastTrapActivationTime = currentTime;
                     }
@@ -159,9 +159,9 @@ public class GameScreen implements Screen {
                 Rectangle key = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(key)){
                     loadMap.setKeyCollected(true);
-                    Music key_music = Gdx.audio.newMusic(Gdx.files.internal("keys_moving.mp3"));
-                    key_music.setLooping(false);
-                    key_music.play();
+                    Music goldFx = Gdx.audio.newMusic(Gdx.files.internal("keys_moving.mp3"));
+                    goldFx.setLooping(false);
+                    goldFx.play();
                 }
             }
         }
@@ -243,10 +243,12 @@ public class GameScreen implements Screen {
         float centerY = Gdx.graphics.getHeight() / 2f;
 
         // Adjust the text position so it's centered
-        drawCenteredText(game.getSpriteBatch(), pauseFont, "Game Paused", centerX, centerY + 50);
-        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press Space to resume", centerX, centerY);
-        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press M for Menu Screen", centerX, centerY - 50);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Game Paused", centerX, centerY + 100);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press Space to resume", centerX, centerY + 50);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press M for Menu", centerX, centerY);
+        drawCenteredText(game.getSpriteBatch(), pauseFont, "Press S to Silence", centerX, centerY - 50);
         drawCenteredText(game.getSpriteBatch(), pauseFont, "Press X to quit", centerX, centerY - 100);
+
 
 
         game.getSpriteBatch().end();
@@ -262,6 +264,13 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             pauseFont.getData().setScale(1f);
             game.goToMenu();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            if (game.backgroundMusic.getVolume() > 0f) {
+                game.backgroundMusic.setVolume(0f);
+
+            } else {
+                game.backgroundMusic.setVolume(1f);
+            }
         }
     }
 
