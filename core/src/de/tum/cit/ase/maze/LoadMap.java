@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import static de.tum.cit.ase.maze.GameScreen.setCharacterX;
 import static de.tum.cit.ase.maze.GameScreen.setCharacterY;
+import static java.util.Collections.max;
 
 /**
  *
@@ -24,10 +25,13 @@ public class LoadMap {
     private Texture things = new Texture(Gdx.files.internal("things.png"));
     private Texture objects = new Texture(Gdx.files.internal("objects.png"));
     private TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
+    private TextureRegion floor = new TextureRegion(basictiles,0,128,16,16);
+
     private TextureRegion exit = new TextureRegion(things,0,32,16,16);
     private TextureRegion exitOpen = new TextureRegion(things,0,0,16,16);
     private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
     private TextureRegion key = new TextureRegion(objects,2,66,10,10);
+    private int maximumX,maximumY = 0;
 
 
     public LoadMap(SpriteBatch spriteBatch) {
@@ -53,26 +57,35 @@ public class LoadMap {
                 String[] partes = linea.split("=");
                 String[] coordenadas = partes[0].split(",");
                 int x = Integer.parseInt(coordenadas[0])*16;
+                maximumX = Math.max(maximumX, Integer.parseInt(coordenadas[0]));
                 int y = Integer.parseInt(coordenadas[1])*16;
-                int tipoImagen = Integer.parseInt(partes[1].trim());
+                maximumY = Math.max(maximumY, Integer.parseInt(coordenadas[1]));
+                int typeImage = Integer.parseInt(partes[1].trim());
                 // Sets the character for first time.
-                if (tipoImagen == 1){
+                if (typeImage == 1){
                     setCharacterX(x);
                     setCharacterY(y);
                 }
                 coordinateArray[index][0] = x;
                 coordinateArray[index][1] = y;
-                coordinateArray[index][2] = tipoImagen;
-
+                coordinateArray[index][2] = typeImage;
                 index++;
             }
         }
     }
     public void drawImagen() {
+        for (int x=0;x<maximumX*16;x=x+16) {
+            for (int y = 0; y < maximumY*16; y=y+16) {
+                spriteBatch.draw(floor, x, y, 16, 16);
+            }
+        }
         for (int i=0;i<coordinateArray.length;i++){
             switch (coordinateArray[i][2]) {
                 case 0: // WALLS
                     spriteBatch.draw(walls, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
+                    break;
+                case 1:
+                    spriteBatch.draw(floor, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     break;
                 case 2: // EXIT
                     if (keyCollected){

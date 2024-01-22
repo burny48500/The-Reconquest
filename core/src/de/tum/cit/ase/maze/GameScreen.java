@@ -79,6 +79,8 @@ public class GameScreen implements Screen {
             }
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
             // Draw the character at the new position based on WASD key input
+            loadMap.drawImagen();
+            // Draw the types of objects loaded in the map
             game.getSpriteBatch().draw(
                     player.getCharacterAnimation().getKeyFrame(stateTime, isMoving),
                     characterX,
@@ -86,9 +88,6 @@ public class GameScreen implements Screen {
                     10, // Width of the character
                     20 // Height of the character
             );
-            // Draw the types of objects loaded in the map
-            loadMap.drawImagen();
-
             // Draw the hearts
             hud.showLives();
             // Draw the keys

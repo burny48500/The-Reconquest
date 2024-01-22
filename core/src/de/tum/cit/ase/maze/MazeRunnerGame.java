@@ -98,6 +98,9 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
+        if (backgroundMusic != null){
+            backgroundMusic.pause();
+        }
         hud.setNumberOfLives(3);
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
@@ -113,6 +116,9 @@ public class MazeRunnerGame extends Game {
 
 
     public void goToGameOver() {
+        if (backgroundMusic != null){
+            backgroundMusic.pause();
+        }
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();

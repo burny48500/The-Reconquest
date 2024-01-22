@@ -131,7 +131,6 @@ public class MenuScreen implements Screen {
             }
         });
 
-
     }
     private void selectMapFile() {
         NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
