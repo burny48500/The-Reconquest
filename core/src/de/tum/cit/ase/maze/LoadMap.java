@@ -24,15 +24,16 @@ public class LoadMap {
     private Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
     private Texture things = new Texture(Gdx.files.internal("things.png"));
     private Texture objects = new Texture(Gdx.files.internal("objects.png"));
+    private Texture mobs = new Texture(Gdx.files.internal("mobs.png"));
+
     private TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
     private TextureRegion floor = new TextureRegion(basictiles,0,128,16,16);
-
     private TextureRegion exit = new TextureRegion(things,0,32,16,16);
     private TextureRegion exitOpen = new TextureRegion(things,0,0,16,16);
     private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
+    private TextureRegion dynamic_trap = new TextureRegion(mobs,96,63,16,10);
     private TextureRegion key = new TextureRegion(objects,2,66,10,10);
     private int maximumX,maximumY = 0;
-
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
@@ -97,6 +98,9 @@ public class LoadMap {
                 case 3: // STATIC_TRAP
                     spriteBatch.draw(static_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
                     break;
+                case 4:
+                    spriteBatch.draw(dynamic_trap, coordinateArray[i][0], coordinateArray[i][1], 16, 12);
+                    break;
                 case 5: // KEY
                     if (!keyCollected){
                         spriteBatch.draw(key, coordinateArray[i][0], coordinateArray[i][1], 10, 10);
@@ -108,6 +112,7 @@ public class LoadMap {
     public int[][] getCoordinateArray() {
         return coordinateArray;
     }
+
     public boolean isKeyCollected() {
         return keyCollected;
     }

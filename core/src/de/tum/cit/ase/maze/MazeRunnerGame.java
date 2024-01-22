@@ -113,7 +113,6 @@ public class MazeRunnerGame extends Game {
         loadMap.setKeyCollected(false);
     }
 
-
     public void goToGameOver() {
         if (backgroundMusic != null){
             backgroundMusic.pause();

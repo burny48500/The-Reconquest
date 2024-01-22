@@ -143,7 +143,7 @@ public class GameScreen implements Screen {
                     if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
-                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.wav"));
+                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("SpikeTrapFx.mp3"));
                         spikeTrapFx.setLooping(false);
                         spikeTrapFx.play();
                         // Update the last activation time
