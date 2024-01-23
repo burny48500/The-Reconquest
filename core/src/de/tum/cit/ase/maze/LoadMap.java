@@ -114,21 +114,23 @@ public class LoadMap {
         spriteBatch.draw(dynamic_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 32, 24);
     }
 
-    private void chooseNewTarget(int i) {
-        // Set a new target position randomly
-        targetPosition.set(random.nextFloat() * maximumX * 16, random.nextFloat() * maximumY * 16);
 
-        // Adjust the target position to avoid going outside the map
+
+    private void chooseNewTarget(int i) {
+        // Update the target position smoothly over time
+        float deltaX = (random.nextFloat() * 2 - 1) * 50;  // Adjust the speed as needed
+        float deltaY = (random.nextFloat() * 2 - 1) * 50;  // Adjust the speed as needed
+
+        // Update the target position
+        targetPosition.x += deltaX;
+        targetPosition.y += deltaY;
+
+        // Clamp the target position to avoid going outside the map
         targetPosition.x = MathUtils.clamp(targetPosition.x, 0, maximumX * 16);
         targetPosition.y = MathUtils.clamp(targetPosition.y, 0, maximumY * 16);
-
-        // If the new target is close to a wall, choose a new target
-        while (isTargetNearWall()) {
-            targetPosition.set(random.nextFloat() * maximumX * 16, random.nextFloat() * maximumY * 16);
-            targetPosition.x = MathUtils.clamp(targetPosition.x, 0, maximumX * 16);
-            targetPosition.y = MathUtils.clamp(targetPosition.y, 0, maximumY * 16);
-        }
     }
+
+
 
     private boolean isTargetNearWall() {
         // Check if the target position is close to a wall (you may need to adjust the threshold)
