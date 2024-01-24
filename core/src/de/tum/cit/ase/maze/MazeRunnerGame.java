@@ -33,13 +33,10 @@ public class MazeRunnerGame extends Game {
     private LoadMap loadMap;
     private Hud hud;
     public Music backgroundMusic;
-    public final NativeFileChooser fileChooser;
-
+    private final NativeFileChooser fileChooser;
 
     // UI Skin
     private Skin skin;
-
-
 
 
     /**

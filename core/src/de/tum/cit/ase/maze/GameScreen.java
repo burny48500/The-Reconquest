@@ -156,8 +156,7 @@ public class GameScreen implements Screen {
                     return false;
                 }
             }
-
-            if (loadMap.getCoordinateArray()[i][2] == 4 && !loadMap.isKeyCollected()){
+            if (loadMap.getCoordinateArray()[i][2] == 4){
                 Rectangle dynamic_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+10, loadMap.getCoordinateArray()[i][1], 6, 12);
                 if (newPlayerRect.overlaps(dynamic_trap)){
                     long currentTime = System.currentTimeMillis();
@@ -191,11 +190,9 @@ public class GameScreen implements Screen {
 
     // Method that reads keys and do the movements in the coordinates of the character
     private void keysMovements(float delta){
-        float newCharacterX = characterX;
-        float newCharacterY = characterY;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            if (!checkWallCollision(new Rectangle(newCharacterX, characterY + speed * delta, 10, 8))){
+            if (!checkWallCollision(new Rectangle(characterX, characterY + speed * delta, 10, 8))){
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                     characterY += speed * 1.5 * delta;
                     isMoving = true;
@@ -208,7 +205,7 @@ public class GameScreen implements Screen {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            if (!checkWallCollision(new Rectangle(newCharacterX, characterY - speed * delta, 10, 8))){
+            if (!checkWallCollision(new Rectangle(characterX, characterY - speed * delta, 10, 8))){
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                     characterY -= speed * 1.5 * delta;
                     isMoving = true;
@@ -221,7 +218,7 @@ public class GameScreen implements Screen {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            if (!checkWallCollision(new Rectangle(newCharacterX - speed*delta, characterY, 10, 8))){
+            if (!checkWallCollision(new Rectangle(characterX - speed*delta, characterY, 10, 8))){
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                     characterX -= speed * 1.5 * delta;
                     isMoving = true;
@@ -235,7 +232,7 @@ public class GameScreen implements Screen {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            if (!checkWallCollision(new Rectangle(newCharacterX+ speed*delta, characterY, 10, 8))){
+            if (!checkWallCollision(new Rectangle(characterX+ speed*delta, characterY, 10, 8))){
                 if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                     characterX += speed * 1.5 * delta;
                     isMoving = true;

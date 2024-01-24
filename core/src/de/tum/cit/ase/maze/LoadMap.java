@@ -22,7 +22,7 @@ import static java.util.Collections.max;
 public class LoadMap {
 
     private String fileGame;
-    int[][] coordinateArray;
+    float[][] coordinateArray;
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
     private boolean keyCollected = false;
@@ -42,12 +42,14 @@ public class LoadMap {
     private float elapsed;
     private Animation<TextureRegion> spike_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("spike_trap.gif").read());
     private Animation<TextureRegion> dynamic_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dynamic_ghost.gif").read());
+    private int[] movementDirectionX,movementDirectionY;
     private Random random = new Random();
-    private Vector2 targetPosition = new Vector2();
+    private int randomNumber = 0;
 
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
-        this.coordinateArray = new int[0][3];
+        this.coordinateArray = new float[0][3];
+
     }
 
     public void setFileGame(String fileGame) {
@@ -64,7 +66,7 @@ public class LoadMap {
         String archivo = fileGame;
         String[] lineas = archivo.split("\n");
         int index = 0;
-        coordinateArray = new int[lineas.length][3];
+        coordinateArray = new float[lineas.length][3];
         for (String linea : lineas) {
             if (linea.contains(",")) {
                 String[] partes = linea.split("=");
@@ -85,62 +87,61 @@ public class LoadMap {
                 index++;
             }
         }
-    }
-    public void runDynamicTrap(int i) {
-        float speed = 30.0f;
+        movementDirectionX = new int[index];
+        movementDirectionY = new int[index];
+        Random random = new Random();
 
-        // If the trap is close to the target position, choose a new target
-        if (targetPosition.dst(coordinateArray[i][0], coordinateArray[i][1]) < 5.0f || Gdx.graphics.getDeltaTime() == 0) {
-            chooseNewTarget(i);
+        for (int i = 0; i < index; i++) {
+            movementDirectionX[i] = random.nextBoolean() ? 1 : -1; // Randomly set initial direction
+            movementDirectionY[i] = random.nextBoolean() ? 1 : -1; // Randomly set initial direction
+        }
+    }
+
+    public void runDynamicTrap(int i) {
+        float delta = Gdx.graphics.getDeltaTime();
+        elapsed += delta * 0.01; // Adjust the speed as needed
+
+        // Check for collisions with walls and change direction accordingly for the specific dynamic trap
+        if (collidesWithWalls(coordinateArray[i][0], coordinateArray[i][1])) {
+            // Change the movement direction for the specific dynamic trap when a collision occurs
+            movementDirectionX[i] *= -1;
+            movementDirectionY[i] *= -1;
         }
 
-        // Calculate the direction towards the target position
-        float angle = MathUtils.atan2(targetPosition.y - coordinateArray[i][1], targetPosition.x - coordinateArray[i][0]);
+        // Move the dynamic trap based on its individual direction
 
-        // Calculate the movement components
-        float deltaX = speed * Gdx.graphics.getDeltaTime() * MathUtils.cos(angle);
-        float deltaY = speed * Gdx.graphics.getDeltaTime() * MathUtils.sin(angle);
-
-        // Update the position
-        coordinateArray[i][0] += deltaX;
-        coordinateArray[i][1] += deltaY;
-
-        // Wrap the position around the map if it goes out of bounds
-        coordinateArray[i][0] = (coordinateArray[i][0] + maximumX * 16) % (maximumX * 16);
-        coordinateArray[i][1] = (coordinateArray[i][1] + maximumY * 16) % (maximumY * 16);
+        coordinateArray[i][0] -= 0.3 * movementDirectionX[i];
+        coordinateArray[i][1] -= 0.3 * movementDirectionY[i];
 
         // Draw the dynamic trap
-        elapsed += Gdx.graphics.getDeltaTime() * 0.015;
         spriteBatch.draw(dynamic_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 32, 24);
     }
 
+    private boolean collidesWithWalls(float x, float y) {
+        // Check if the next position collides with walls
+        // Iterate through the walls in coordinateArray and check for collisions
+        for (int i = 0; i < coordinateArray.length; i++) {
+            if (coordinateArray[i][2] == 0 || coordinateArray[i][2] == 1 || coordinateArray[i][2] == 2 || coordinateArray[i][2] == 3) { // Check if it's a wall,entry,exit,trap
+                float wallX = coordinateArray[i][0];
+                float wallY = coordinateArray[i][1];
+                float wallWidth = 8;
+                float wallHeight = 8;
 
-
-    private void chooseNewTarget(int i) {
-        // Update the target position smoothly over time
-        float deltaX = (random.nextFloat() * 2 - 1) * 50;  // Adjust the speed as needed
-        float deltaY = (random.nextFloat() * 2 - 1) * 50;  // Adjust the speed as needed
-
-        // Update the target position
-        targetPosition.x += deltaX;
-        targetPosition.y += deltaY;
-
-        // Clamp the target position to avoid going outside the map
-        targetPosition.x = MathUtils.clamp(targetPosition.x, 0, maximumX * 16);
-        targetPosition.y = MathUtils.clamp(targetPosition.y, 0, maximumY * 16);
-    }
-
-
-
-    private boolean isTargetNearWall() {
-        // Check if the target position is close to a wall (you may need to adjust the threshold)
-        for (int j = 0; j < coordinateArray.length; j++) {
-            if (coordinateArray[j][2] == 0 && targetPosition.dst(coordinateArray[j][0], coordinateArray[j][1]) < 20.0f) {
-                return true;
+                // Check for collision
+                if (x < wallX + wallWidth &&
+                        x + 16 > wallX &&
+                        y < wallY + wallHeight &&
+                        y + 12 > wallY) {
+                    return true; // Collision detected with a wall
+                }
             }
         }
-        return false;
+
+        return false; // No collision with walls
     }
+
+
+
     public void drawImagen() {
         for (int x=0;x<maximumX*16;x=x+16) {
             for (int y = 0; y < maximumY*16; y=y+16) {
@@ -148,7 +149,7 @@ public class LoadMap {
             }
         }
         for (int i=0;i<coordinateArray.length;i++){
-            switch (coordinateArray[i][2]) {
+            switch ((int) coordinateArray[i][2]) {
                 case 0: // WALLS
                     spriteBatch.draw(walls, coordinateArray[i][0], coordinateArray[i][1], 16, 16);
                     break;
@@ -163,7 +164,7 @@ public class LoadMap {
                     }
                     break;
                 case 3: // STATIC_TRAP
-                    elapsed += Gdx.graphics.getDeltaTime()*0.05;
+                    elapsed += Gdx.graphics.getDeltaTime()*0.03;
                     spriteBatch.draw(spike_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 16, 12);
                     break;
                 case 4:
@@ -177,7 +178,7 @@ public class LoadMap {
             }
         }
     }
-    public int[][] getCoordinateArray() {
+    public float[][] getCoordinateArray() {
         return coordinateArray;
     }
 

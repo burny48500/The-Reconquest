@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 public class Player extends Game {
     private int xPos=0;
     private int yPos=0;
-
+    
     private int selectedCharacterColumn = 0; // Column index of the third character (0-based index)
     private int selectedCharacterRow = 0;    // Row index of the selected character (0-based index)
     private float frameDurationCharacter = 0.1f;
@@ -23,12 +27,12 @@ public class Player extends Game {
 
     // Character animation downwards
     private Animation<TextureRegion> CharacterAnimation;
-
+    
     public Player() {
         xPos = 1;
-        yPos = 1;
+	yPos = 1;
     }
-
+ 
     public void loadCharacterAnimation(){
 
         int frameWidth = 16;
@@ -64,18 +68,19 @@ public class Player extends Game {
 
         CharacterAnimation = new Animation<>(frameDurationCharacter, walkFrames);
     }
-
-
-    public void setFrameDurationCharacter(float frameDurationCharacter) {
+    
+     public void setFrameDurationCharacter(float frameDurationCharacter) {
         this.frameDurationCharacter = frameDurationCharacter;
     }
-
-    public Animation<TextureRegion> getCharacterAnimation() {
+     
+     public Animation<TextureRegion> getCharacterAnimation() {
         return CharacterAnimation;
     }
 
     @Override
     public void create() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+        
+        
 }
