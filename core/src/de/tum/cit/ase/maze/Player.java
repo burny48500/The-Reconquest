@@ -22,7 +22,10 @@ public class Player extends Game {
     private int selectedCharacterColumn = 0; // Column index of the third character (0-based index)
     private int selectedCharacterRow = 0;    // Row index of the selected character (0-based index)
     private float frameDurationCharacter = 0.1f;
+    public boolean characterHurt = false;
     private Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
+    private Texture walkSheetRed = new Texture(Gdx.files.internal("characterRed.png"));
+
 
 
     // Character animation downwards
@@ -59,13 +62,20 @@ public class Player extends Game {
             selectedCharacterColumn = 0;
             selectedCharacterRow = 2;
         }
-        // Add frames for the selected character to the animation
-        for (int i=0;i<animationFrames;i++){
-            int startX = selectedCharacterColumn * frameWidth + i * frameWidth;
-            int startY = selectedCharacterRow * frameHeight;
-            walkFrames.add(new TextureRegion(walkSheet, startX, startY, frameWidth, frameHeight));
-        }
 
+        if (characterHurt){
+            for (int i=0;i<animationFrames;i++) {
+                int startX = selectedCharacterColumn * frameWidth + i * frameWidth;
+                int startY = selectedCharacterRow * frameHeight;
+                walkFrames.add(new TextureRegion(walkSheetRed, startX, startY, frameWidth, frameHeight));
+            }
+        } else {
+            for (int i=0;i<animationFrames;i++) {
+                int startX = selectedCharacterColumn * frameWidth + i * frameWidth;
+                int startY = selectedCharacterRow * frameHeight;
+                walkFrames.add(new TextureRegion(walkSheet, startX, startY, frameWidth, frameHeight));
+            }
+        }
         CharacterAnimation = new Animation<>(frameDurationCharacter, walkFrames);
     }
     

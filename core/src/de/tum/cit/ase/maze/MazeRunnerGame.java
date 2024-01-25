@@ -34,9 +34,9 @@ public class MazeRunnerGame extends Game {
     private Hud hud;
     public Music backgroundMusic;
     private final NativeFileChooser fileChooser;
-
-    // UI Skin
     private Skin skin;
+
+
 
 
     /**
@@ -118,7 +118,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.stop();
         backgroundMusic.setLooping(false);
         backgroundMusic.play();
-        backgroundMusic.setVolume(0.1f);
+        backgroundMusic.setVolume(1f);
         this.setScreen(new GameOverScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
@@ -130,10 +130,10 @@ public class MazeRunnerGame extends Game {
         if (backgroundMusic != null){
             backgroundMusic.pause();
         }
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameScreen.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("WinMusic.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-        backgroundMusic.setVolume(0.1f);
+        backgroundMusic.setVolume(1f);
         this.setScreen(new WinScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists

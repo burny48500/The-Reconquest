@@ -88,6 +88,8 @@ public class GameScreen implements Screen {
                     10, // Width of the character
                     20 // Height of the character
             );
+
+
             // Draw the hearts
             hud.showLives();
             // Draw the keys
@@ -123,7 +125,6 @@ public class GameScreen implements Screen {
                     return true; // Collision detected WALL
                 }
             }
-
             if (loadMap.getCoordinateArray()[i][2] == 2){
                 Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
@@ -140,8 +141,7 @@ public class GameScreen implements Screen {
                 Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+3, loadMap.getCoordinateArray()[i][1]+2, 8, 6);
                 if (newPlayerRect.overlaps(static_trap)) {
                     long currentTime = System.currentTimeMillis();
-
-                    if (currentTime - lastTrapActivationTime >= 1000) {
+                    if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
                         Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("SpikeTrapFx.mp3"));
@@ -156,15 +156,16 @@ public class GameScreen implements Screen {
                     return false;
                 }
             }
+
             if (loadMap.getCoordinateArray()[i][2] == 4){
                 Rectangle dynamic_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+10, loadMap.getCoordinateArray()[i][1], 6, 12);
                 if (newPlayerRect.overlaps(dynamic_trap)){
                     long currentTime = System.currentTimeMillis();
 
-                    if (currentTime - lastTrapActivationTime >= 1000) {
+                    if (currentTime - lastTrapActivationTime >= 2000) {
                         // Perform the action
                         hud.loseLive();
-                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("CollisionFire.mp3"));
+                        Music spikeTrapFx = Gdx.audio.newMusic(Gdx.files.internal("GhostSound.mp3"));
                         spikeTrapFx.setLooping(false);
                         spikeTrapFx.play();
                         // Update the last activation time
@@ -183,6 +184,12 @@ public class GameScreen implements Screen {
                     goldFx.setLooping(false);
                     goldFx.play();
                 }
+            }
+            if (loadMap.getCoordinateArray()[i][2] != 3 || loadMap.getCoordinateArray()[i][2] != 4) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastTrapActivationTime < 2000) {
+                    player.characterHurt=true;
+                } else player.characterHurt=false;
             }
         }
         return false; // No collision detected
