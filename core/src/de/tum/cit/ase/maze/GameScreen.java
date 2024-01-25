@@ -137,7 +137,6 @@ public class GameScreen implements Screen {
                     return true;
                 }
             }
-
             if (loadMap.getCoordinateArray()[i][2] == 3) {
                 Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+3, loadMap.getCoordinateArray()[i][1]+2, 8, 6);
                 if (newPlayerRect.overlaps(static_trap)) {
@@ -198,59 +197,63 @@ public class GameScreen implements Screen {
 
     // Method that reads keys and do the movements in the coordinates of the character
     private void keysMovements(float delta){
+        if ((characterX<loadMap.maximumX*16 && characterX>=-10) && (characterY<loadMap.maximumY*16 && characterY>=-10)){
+            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                System.out.println(loadMap.maximumX + "&" + loadMap.maximumY);
+                if (!checkWallCollision(new Rectangle(characterX, characterY + speed * delta, 10, 8))){
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        characterY += speed * 1.5 * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.05f);
+                    } else {
+                        characterY += speed * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.1f);
+                    }
+                }
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                if (!checkWallCollision(new Rectangle(characterX, characterY - speed * delta, 10, 8))){
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        characterY -= speed * 1.5 * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.05f);
+                    }else {
+                        characterY -= speed * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.1f);
+                    }
+                }
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                if (!checkWallCollision(new Rectangle(characterX - speed*delta, characterY, 10, 8))){
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                        characterX -= speed * 1.5 * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.05f);
+                    } else {
+                        characterX -= speed * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.1f);
+                    }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            if (!checkWallCollision(new Rectangle(characterX, characterY + speed * delta, 10, 8))){
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                    characterY += speed * 1.5 * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.05f);
-                } else {
-                    characterY += speed * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.1f);
                 }
             }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            if (!checkWallCollision(new Rectangle(characterX, characterY - speed * delta, 10, 8))){
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                    characterY -= speed * 1.5 * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.05f);
-                }else {
-                    characterY -= speed * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.1f);
+            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                if (!checkWallCollision(new Rectangle(characterX+ speed*delta, characterY, 10, 8))){
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        characterX += speed * 1.5 * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.05f);
+                    } else {
+                        characterX += speed * delta;
+                        isMoving = true;
+                        player.setFrameDurationCharacter(0.1f);
+                    }
                 }
             }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            if (!checkWallCollision(new Rectangle(characterX - speed*delta, characterY, 10, 8))){
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-                    characterX -= speed * 1.5 * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.05f);
-                } else {
-                    characterX -= speed * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.1f);
-                }
-
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            if (!checkWallCollision(new Rectangle(characterX+ speed*delta, characterY, 10, 8))){
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                    characterX += speed * 1.5 * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.05f);
-                } else {
-                    characterX += speed * delta;
-                    isMoving = true;
-                    player.setFrameDurationCharacter(0.1f);
-                }
-            }
+        }else {
+            game.goToGameOver();
         }
     }
 

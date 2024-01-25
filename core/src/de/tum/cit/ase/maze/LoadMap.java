@@ -38,7 +38,7 @@ public class LoadMap {
     private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
     //private TextureRegion dynamic_trap = new TextureRegion(mobs,96,63,16,10);
     private TextureRegion key = new TextureRegion(objects,2,66,10,10);
-    private int maximumX,maximumY = 0;
+    public int maximumX,maximumY = 0;
     private float elapsed;
     private Animation<TextureRegion> spike_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("spike_trap.gif").read());
     private Animation<TextureRegion> dynamic_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dynamic_ghost.gif").read());
