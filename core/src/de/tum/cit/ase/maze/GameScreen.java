@@ -77,6 +77,7 @@ public class GameScreen implements Screen {
             if (!isMoving) {
                 stateTime = 0f;
             }
+            checkWallCollision(new Rectangle(characterX, characterY, 10, 8));
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
             // Draw the character at the new position based on WASD key input
             loadMap.drawImagen();
