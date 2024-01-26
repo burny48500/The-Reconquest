@@ -24,7 +24,10 @@ public class WinScreen implements Screen {
     private SpriteBatch batch;
 
 
-
+    /**
+     * The constructor is responsible to put the title and the button to go back to MenuScreen
+     * @param game Class Game, used to access and write attributes and methods
+     */
     public WinScreen(MazeRunnerGame game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport()); // Initialize the stage here

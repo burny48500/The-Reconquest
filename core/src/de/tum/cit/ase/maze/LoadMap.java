@@ -26,40 +26,39 @@ public class LoadMap {
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
     private boolean keyCollected = false;
+
+    // Creating the textures
     private Texture basictiles = new Texture(Gdx.files.internal("basictiles.png"));
     private Texture things = new Texture(Gdx.files.internal("things.png"));
     private Texture objects = new Texture(Gdx.files.internal("objects.png"));
-    private Texture mobs = new Texture(Gdx.files.internal("mobs.png"));
 
+    // Creating TextureRegion
     private TextureRegion walls = new TextureRegion(basictiles,0,0,16,16);
     private TextureRegion floor = new TextureRegion(basictiles,0,128,16,16);
     private TextureRegion exit = new TextureRegion(things,0,32,16,16);
     private TextureRegion exitOpen = new TextureRegion(things,0,0,16,16);
-    private TextureRegion static_trap = new TextureRegion(things,144,54,16,10);
-    //private TextureRegion dynamic_trap = new TextureRegion(mobs,96,63,16,10);
     private TextureRegion key = new TextureRegion(objects,2,66,10,10);
+
     public int maximumX,maximumY = 0;
     private float elapsed;
     private Animation<TextureRegion> spike_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("spike_trap.gif").read());
     private Animation<TextureRegion> dynamic_trap = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("dynamic_ghost.gif").read());
     private int[] movementDirectionX,movementDirectionY;
-    private Random random = new Random();
-    private int randomNumber = 0;
 
+    /**
+     * Constructor initializing the parameters
+     * @param spriteBatch
+     */
     public LoadMap(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
         this.coordinateArray = new float[0][3];
 
     }
 
-    public void setFileGame(String fileGame) {
-        this.fileGame = fileGame;
-    }
-
-    public String getFileGame() {
-        return fileGame;
-    }
-
+    /**
+     * Reads the map and put the information into coordinateArray, which is a 2D-Array
+     * maximumX and maximumY sets the max of coordinates for not allowing the character go out of the map
+     */
     public void readMap() {
         maximumX = 1;
         maximumY = 1;
@@ -76,7 +75,7 @@ public class LoadMap {
                 int y = Integer.parseInt(coordenadas[1])*16;
                 maximumY = Math.max(maximumY, Integer.parseInt(coordenadas[1]));
                 int typeImage = Integer.parseInt(partes[1].trim());
-                // Sets the character for first time.
+                // Sets the character in the start
                 if (typeImage == 1){
                     setCharacterX(x);
                     setCharacterY(y);
@@ -97,6 +96,10 @@ public class LoadMap {
         }
     }
 
+    /**
+     * If collides, then changes the direction of the dynamic_trap
+     * @param i it is set for every single enemy
+     */
     public void runDynamicTrap(int i) {
         float delta = Gdx.graphics.getDeltaTime();
         elapsed += delta * 0.01; // Adjust the speed as needed
@@ -117,6 +120,11 @@ public class LoadMap {
         spriteBatch.draw(dynamic_trap.getKeyFrame(elapsed), coordinateArray[i][0], coordinateArray[i][1], 32, 24);
     }
 
+    /**
+     * Method to see if the ghost collides
+     * @param x,y position of the enemy in that moment
+     * @return true only when the enemy is near a wall
+     */
     private boolean collidesWithWalls(float x, float y) {
         // Check if the next position collides with walls
         // Iterate through the walls in coordinateArray and check for collisions
@@ -141,7 +149,9 @@ public class LoadMap {
     }
 
 
-
+    /**
+     * It draws the image every frame of walls, keys, static_traps ...
+     */
     public void drawImagen() {
         for (int x=0;x<maximumX*16;x=x+16) {
             for (int y = 0; y < maximumY*16; y=y+16) {
@@ -181,7 +191,13 @@ public class LoadMap {
     public float[][] getCoordinateArray() {
         return coordinateArray;
     }
+    public void setFileGame(String fileGame) {
+        this.fileGame = fileGame;
+    }
 
+    public String getFileGame() {
+        return fileGame;
+    }
     public boolean isKeyCollected() {
         return keyCollected;
     }

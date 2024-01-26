@@ -24,7 +24,10 @@ public class GameOverScreen implements Screen {
     private SpriteBatch batch;
 
 
-
+    /**
+     * The constructor is responsible to put the title and the button to go back to MenuScreen
+     * @param game Game class, used to access and write attributes and methods.
+     */
     public GameOverScreen(MazeRunnerGame game) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport()); // Initialize the stage here
@@ -38,8 +41,6 @@ public class GameOverScreen implements Screen {
         stage = new Stage(viewport, game.getSpriteBatch());
         backgroundSprite.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
         batch = game.getSpriteBatch();
-
-
 
 
         Table table = new Table(); // Create a table for layout
@@ -77,6 +78,7 @@ public class GameOverScreen implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
+
 
     @Override
     public void pause() {}

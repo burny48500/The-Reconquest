@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-/**
- *
- * @author Usuario
- */
+
 public class Player extends Game {
     private int xPos=0;
     private int yPos=0;
@@ -30,12 +27,18 @@ public class Player extends Game {
 
     // Character animation downwards
     private Animation<TextureRegion> CharacterAnimation;
-    
+
+    /**
+     * Constructor initializing position to 1
+     */
     public Player() {
         xPos = 1;
-	yPos = 1;
+	    yPos = 1;
     }
- 
+
+    /**
+     * Load the Animation for the character to plays it right after
+     */
     public void loadCharacterAnimation(){
 
         int frameWidth = 16;

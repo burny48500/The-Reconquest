@@ -74,6 +74,7 @@ public class MazeRunnerGame extends Game {
     }
     /**
      * Switches to the menu screen.
+     * Music switches
      */
     public void goToMenu() {
         if (backgroundMusic != null){
@@ -92,6 +93,7 @@ public class MazeRunnerGame extends Game {
 
     /**
      * Switches to the game screen.
+     * Music switches
      */
     public void goToGame() {
         if (backgroundMusic != null){
@@ -110,6 +112,9 @@ public class MazeRunnerGame extends Game {
         loadMap.setKeyCollected(false);
     }
 
+    /**
+     * Switches to the Game Over Screen
+     */
     public void goToGameOver() {
         if (backgroundMusic != null){
             backgroundMusic.pause();
@@ -126,6 +131,9 @@ public class MazeRunnerGame extends Game {
         }
     }
 
+    /**
+     * Switches  to Win Screen.
+     */
     public void goToWinScreen() {
         if (backgroundMusic != null){
             backgroundMusic.pause();

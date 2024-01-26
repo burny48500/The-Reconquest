@@ -17,16 +17,29 @@ public class Hud {
     private TextureRegion notKey = new TextureRegion(objects, 15, 90, 17, 4);
 
     private TextureRegion hearts = new TextureRegion(objects, 64, 0, 16, 16);
+
+    /**
+     * Constructor initializes the variables
+     * @param gameScreen Game class, used to access and write attributes and methods.
+     * @param spriteBatch Takes the spritebatch
+     * @param loadMap LoadMap class, used to access and write attributes and methods.
+     */
     public Hud(GameScreen gameScreen,SpriteBatch spriteBatch,LoadMap loadMap) {
         this.gameScreen = gameScreen;
         this.loadMap = loadMap;
         this.spriteBatch = spriteBatch;
     }
 
+    /**
+     * Method responsible to lose a live.
+     */
     public void loseLive() {
         numberOfLives -= 1;
     }
 
+    /**
+     * Method to show the lives of the character in the top left part of the screen
+     */
     public void showLives() {
         spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         switch (numberOfLives){
@@ -42,10 +55,12 @@ public class Hud {
             case 1:
                 spriteBatch.draw(hearts, Gdx.graphics.getWidth() / 15f, Gdx.graphics.getHeight() / 1.05f, 32, 32);
             default:
-
         }
     }
 
+    /**
+     * Method to show the key in the top left corner
+     */
     public void showKey(){
         spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         if (loadMap.isKeyCollected()){

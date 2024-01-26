@@ -41,26 +41,37 @@ public class GameScreen implements Screen {
     private long lastTrapActivationTime = 0;
 
     /**
-     * Constructor for GameScreen. Sets up the camera and font.
+     * Constructor for GameScreen. Sets up the camera, hud and font.
      *
      * @param game The main game class, used to access global resources and methods.
+     * @param player The object of player, used for the main character
+     * @param loadMap A class where you read and draw the map
      */
     public GameScreen(MazeRunnerGame game, Player player, LoadMap loadMap) {
         this.game = game;
         this.player = player;
         this.loadMap = loadMap;
         this.hud = game.getHud();
+
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(true);
+        // Adjust the zoom
         camera.zoom = 0.15f;
 
         // Get the font from the game's skin
         pauseFont = game.getSkin().getFont("font");
+        // Set Scale to one every time the GameScreen starts
         pauseFont.getData().setScale(1f);
     }
 
-
+    /**
+     * Camera always centered
+     * It checks for collisions, also when no movement
+     * It draws the image of the class loadmap
+     * Draws the lives & key (Top left of screen)
+     * @param delta The time in seconds since the last render.
+     */
     public void render(float delta) {
         if (!isPaused) {
             stateTime += Gdx.graphics.getDeltaTime();
@@ -79,9 +90,9 @@ public class GameScreen implements Screen {
             }
             checkWallCollision(new Rectangle(characterX, characterY, 10, 8));
             game.getSpriteBatch().setProjectionMatrix(camera.combined);
-            // Draw the character at the new position based on WASD key input
-            loadMap.drawImagen();
             // Draw the types of objects loaded in the map
+            loadMap.drawImagen();
+            // Draw the character at the new position based on WASD key input
             game.getSpriteBatch().draw(
                     player.getCharacterAnimation().getKeyFrame(stateTime, isMoving),
                     characterX,
@@ -105,27 +116,37 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * This function detects the keys of the keyboard and do a functionality
+     * @param delta The time in seconds since the last render.
+     */
     private void handleInput(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            // It stops the game
             togglePause();
         }
 
         if (!isPaused) {
             isMoving = false;
-
             keysMovements(delta);
         }
     }
-    // Method that creates rectangles in every single wall
+
+    /**
+     * Method that creates rectangles in every single wall
+     * @param newPlayerRect It takes a rectancle of the character (x,y)
+     * @return If there is a Collision, the value is TRUE.
+     */
     private boolean checkWallCollision(Rectangle newPlayerRect) {
-        // Check for collisions with walls
         for (int i = 0; i < loadMap.getCoordinateArray().length; i++) {
+            // Check for collisions with WALLS
             if (loadMap.getCoordinateArray()[i][2] == 0) {
                 Rectangle wallRect = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 12);
                 if (newPlayerRect.overlaps(wallRect)) {
                     return true; // Collision detected WALL
                 }
             }
+            // Check for collisions with EXIT
             if (loadMap.getCoordinateArray()[i][2] == 2){
                 Rectangle exit = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(exit) && loadMap.isKeyCollected()) {
@@ -137,6 +158,7 @@ public class GameScreen implements Screen {
                     return true;
                 }
             }
+            // Check for collisions with STATIC_TRAPS
             if (loadMap.getCoordinateArray()[i][2] == 3) {
                 Rectangle static_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+3, loadMap.getCoordinateArray()[i][1]+2, 8, 6);
                 if (newPlayerRect.overlaps(static_trap)) {
@@ -156,7 +178,7 @@ public class GameScreen implements Screen {
                     return false;
                 }
             }
-
+            // Check for collisions with DYNAMIC_TRAPS
             if (loadMap.getCoordinateArray()[i][2] == 4){
                 Rectangle dynamic_trap = new Rectangle(loadMap.getCoordinateArray()[i][0]+10, loadMap.getCoordinateArray()[i][1], 6, 12);
                 if (newPlayerRect.overlaps(dynamic_trap)){
@@ -176,6 +198,7 @@ public class GameScreen implements Screen {
                     }
                 }
             }
+            // Check for collisions with KEY
             if (loadMap.getCoordinateArray()[i][2] == 5 && !loadMap.isKeyCollected()){
                 Rectangle key = new Rectangle(loadMap.getCoordinateArray()[i][0], loadMap.getCoordinateArray()[i][1], 14, 14);
                 if (newPlayerRect.overlaps(key)){
@@ -185,6 +208,7 @@ public class GameScreen implements Screen {
                     goldFx.play();
                 }
             }
+            // Puts the character in red
             if (loadMap.getCoordinateArray()[i][2] != 3 || loadMap.getCoordinateArray()[i][2] != 4) {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastTrapActivationTime < 2000) {
@@ -195,8 +219,12 @@ public class GameScreen implements Screen {
         return false; // No collision detected
     }
 
-    // Method that reads keys and do the movements in the coordinates of the character
+    /**
+     * Reads keys and do the movements in the coordinates of the character
+     * @param delta The time in seconds since the last render.
+     */
     private void keysMovements(float delta){
+        // Makes sure its inside the map
         if ((characterX<loadMap.maximumX*16 && characterX>=-10) && (characterY<loadMap.maximumY*16 && characterY>=-10)){
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
                 System.out.println(loadMap.maximumX + "&" + loadMap.maximumY);
@@ -257,10 +285,10 @@ public class GameScreen implements Screen {
         }
     }
 
-    // Display Pause Menu
+    /**
+     * Draw the pause menu overlay
+     */
     private void renderPauseMenu() {
-        // Draw the pause menu overlay
-        // You can use pauseFont to render text, buttons, etc.
 
         game.getSpriteBatch().begin();
 
@@ -304,6 +332,15 @@ public class GameScreen implements Screen {
     }
 
     // Method for centering the text of PauseMenu
+
+    /**
+     * External method to center the text correctly
+     * @param spriteBatch Takes the spritebatch
+     * @param font Takes the type of font
+     * @param text The text to show
+     * @param centerX
+     * @param centerY
+     */
     public void drawCenteredText(SpriteBatch spriteBatch, BitmapFont font, String text, float centerX, float centerY) {
         GlyphLayout layout = new GlyphLayout(); // In older libGDX versions, you may need to use BitmapFont.TextBounds
         layout.setText(font, text);
@@ -311,23 +348,18 @@ public class GameScreen implements Screen {
         font.draw(spriteBatch, text, centerX - textWidth / 2, centerY);
     }
 
-    // It stops the game and resumes the game
+    /**
+     * Functionality to pause the game
+     */
     private void togglePause() {
         isPaused = !isPaused;
 
         if (isPaused) {
-            // Pause logic (e.g., stop animations, pause timers)
+            // Pause logic
             player.getCharacterAnimation().setPlayMode(Animation.PlayMode.NORMAL); // Stop animations
-
-            // Pause timers or other game logic
-            // Example: timer.pause();
-
         } else {
-            // Resume logic (e.g., resume animations, resume timers)
+            // Resume logic
             player.getCharacterAnimation().setPlayMode(Animation.PlayMode.LOOP); // Resume animations
-
-            // Resume timers or other game logic
-            // Example: timer.resume();
         }
     }
     @Override

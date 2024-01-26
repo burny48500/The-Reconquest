@@ -56,10 +56,9 @@ public class MenuScreen implements Screen {
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
-     *
+     * @param loadMap The LoadMap class, used to access and write attributes and methods.
      *
      */
-
 
     public MenuScreen(MazeRunnerGame game, LoadMap loadMap) {
         this.game = game;
@@ -74,9 +73,6 @@ public class MenuScreen implements Screen {
         stage = new Stage(viewport, game.getSpriteBatch());
         backgroundSprite.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
         batch = game.getSpriteBatch();
-
-
-
 
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -132,6 +128,10 @@ public class MenuScreen implements Screen {
         });
 
     }
+
+    /**
+     * Method for selecting a map file from the NativeFileChooser
+     */
     private void selectMapFile() {
         NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
         // Configure the file chooser here (e.g., set title, start directory, etc.)
@@ -161,6 +161,11 @@ public class MenuScreen implements Screen {
         });
     }
 
+    /**
+     *
+     * @param filePath The given filepath to read the map
+     * @return It returns a String containing one line with \n
+     */
     private String readFile(String filePath) {
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -185,6 +190,11 @@ public class MenuScreen implements Screen {
         stage.draw();
     }
 
+    /**
+     * Two parameters for updating the camera
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
