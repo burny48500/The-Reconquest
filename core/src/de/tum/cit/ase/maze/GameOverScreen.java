@@ -35,7 +35,7 @@ public class GameOverScreen implements Screen {
         OrthographicCamera camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Texture backgroundImage = new Texture(Gdx.files.internal("menuScreenBackground.png"));
+        Texture backgroundImage = new Texture(Gdx.files.internal("GameOverBackground.png"));
         backgroundSprite = new Sprite(backgroundImage);
         Viewport viewport = new ExtendViewport(1920, 1280, camera);
         stage = new Stage(viewport, game.getSpriteBatch());
@@ -68,15 +68,24 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Clear the screen and render the stage
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        batch.begin();
+        backgroundSprite.draw(batch);
+        batch.end();
+        stage.act(delta);
         stage.draw();
     }
 
+    /**
+     * Two parameters for updating the camera
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        backgroundSprite.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
     }
 
 
